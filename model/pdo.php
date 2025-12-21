@@ -8,15 +8,9 @@ function pdo_get_connection()
     $username = 'root';
     $password = '';
 
-    try {
-        $conn = new PDO($dburl, $username, $password);
-        // Thiết lập trả về mảng kết hợp (Associative Array) mặc định
-        $conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-        $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        return $conn;
-    } catch (PDOException $e) {
-        die("Lỗi kết nối CSDL: " . $e->getMessage());
-    }
+    $conn = new PDO($dburl, $username, $password);
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    return $conn;
 }
 
 /**
@@ -37,7 +31,8 @@ function pdo_execute($sql)
 }
 
 /**
- * Thực thi câu lệnh INSERT và trả về ID vừa chèn (lastInsertId)
+ * MỚI: Thực thi câu lệnh INSERT và trả về ID vừa chèn
+ * Dùng cho việc lưu Hóa đơn để lấy ID làm Chi tiết hóa đơn
  */
 function pdo_execute_return_lastInsertId($sql)
 {
@@ -46,7 +41,7 @@ function pdo_execute_return_lastInsertId($sql)
         $conn = pdo_get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute($sql_args);
-        return $conn->lastInsertId();
+        return $conn->lastInsertId(); // Trả về ID tự tăng vừa mới tạo
     } catch (PDOException $e) {
         throw $e;
     } finally {
@@ -64,7 +59,8 @@ function pdo_query($sql)
         $conn = pdo_get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute($sql_args);
-        return $stmt->fetchAll();
+        $rows = $stmt->fetchAll();
+        return $rows;
     } catch (PDOException $e) {
         throw $e;
     } finally {
@@ -82,7 +78,8 @@ function pdo_query_one($sql)
         $conn = pdo_get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute($sql_args);
-        return $stmt->fetch();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $row;
     } catch (PDOException $e) {
         throw $e;
     } finally {
@@ -100,7 +97,7 @@ function pdo_query_value($sql)
         $conn = pdo_get_connection();
         $stmt = $conn->prepare($sql);
         $stmt->execute($sql_args);
-        $row = $stmt->fetch();
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
         return $row ? array_values($row)[0] : null;
     } catch (PDOException $e) {
         throw $e;

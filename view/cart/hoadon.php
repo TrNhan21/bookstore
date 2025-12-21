@@ -1,6 +1,7 @@
 <?php
+// Kiểm tra nếu không có thông tin hóa đơn thì quay về trang chủ
 if (!isset($bill) || empty($bill)) {
-    header("Location: index.php");
+    echo "<script>window.location.href='index.php';</script>";
     exit();
 }
 ?>
@@ -193,20 +194,14 @@ if (!isset($bill) || empty($bill)) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (isset($bill_details) && is_array($bill_details)): ?>
-                        <?php foreach ($bill_details as $item): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($item['tensp']) ?></td>
-                                <td class="text-right"><?= $item['soluong'] ?></td>
-                                <td class="text-right"><?= number_format($item['dongia']) ?> đ</td>
-                                <td class="text-right"><strong><?= number_format($item['thanhtien']) ?> đ</strong></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php else: ?>
+                    <?php foreach ($bill_details as $item): ?>
                         <tr>
-                            <td colspan="4" style="text-align:center;">Không tìm thấy chi tiết sản phẩm.</td>
+                            <td><?= $item['tensp'] ?></td>
+                            <td class="text-right"><?= $item['soluong'] ?></td>
+                            <td class="text-right"><?= number_format($item['dongia']) ?> đ</td>
+                            <td class="text-right"><strong><?= number_format($item['thanhtien']) ?> đ</strong></td>
                         </tr>
-                    <?php endif; ?>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
 

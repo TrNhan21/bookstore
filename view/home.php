@@ -1,15 +1,5 @@
 <style>
-    /* Layout danh sách sản phẩm */
-    .product-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        padding: 10px 0;
-    }
-
-    /* Mỗi hộp sản phẩm */
     /* mỗi sản phẩm */
-
     .boxsp {
         width: calc(33.333% - 14px);
         background: #fff;
@@ -18,10 +8,7 @@
         padding: 12px;
         text-align: center;
         transition: 0.3s;
-
     }
-
-
 
     .boxsp:hover {
         transform: translateY(-5px);
@@ -29,133 +16,107 @@
     }
 
     /* ảnh */
-
     .boxsp img {
         width: 100%;
         height: 220px;
         object-fit: contain;
     }
-
-
-    .tensp {
-        font-weight: bold;
-        height: 40px;
-        /* Giới hạn độ cao tên sản phẩm */
-        overflow: hidden;
-        margin: 10px 0;
-    }
-
-    .tensp a {
-        text-decoration: none;
-        color: #333;
-    }
-
-    .gia {
-        color: #e67e22;
-        font-weight: bold;
-        font-size: 16px;
-    }
-
-    /* Đảm bảo slideshow hoạt động */
-    .slideshow-container {
-        max-width: 100%;
-        position: relative;
-        margin: auto;
-    }
 </style>
-
-<div class="row mb">
+<div class="row mb ">
     <div class="boxtrai">
         <div class="row">
             <div class="banner mb">
+                <!-- <img src="view/images/view10.jpg" alt=""> -->
+                <!-- Slideshow container -->
                 <div class="slideshow-container">
+
+                    <!-- Full-width images with number and caption text -->
                     <div class="mySlides fade">
-                        <img src="view/images/view7.jpg" style="width:100%; border-radius: 8px;">
+                        <div class="numbertext">1 / 3</div>
+                        <img src="view/images/view7.jpg" style="width:100%">
                         <div class="text">Đắc Nhân Tâm</div>
                     </div>
 
                     <div class="mySlides fade">
-                        <img src="view/images/view12.jpg" style="width:100%; border-radius: 8px;">
+                        <div class="numbertext">2 / 3</div>
+                        <img src="view/images/view12.jpg" style="width:100%">
                         <div class="text">Bắt Trẻ Đồng Xanh</div>
                     </div>
 
                     <div class="mySlides fade">
-                        <img src="view/images/view3.jpg" style="width:100%; border-radius: 8px;">
+                        <div class="numbertext">3 / 3</div>
+                        <img src="view/images/view3.jpg" style="width:100%">
                         <div class="text">Điều Quan Trọng Nhất</div>
                     </div>
 
+                    <!-- Next and previous buttons -->
                     <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
                     <a class="next" onclick="plusSlides(1)">&#10095;</a>
                 </div>
-                <div style="text-align:center; margin-top: 10px;">
+                <br>
+
+                <!-- The dots/circles -->
+                <div style="text-align:center">
                     <span class="dot" onclick="currentSlide(1)"></span>
                     <span class="dot" onclick="currentSlide(2)"></span>
                     <span class="dot" onclick="currentSlide(3)"></span>
                 </div>
+
             </div>
         </div>
-
         <div class="product-list">
-            <?php
-            if (isset($sanphamnew) && !empty($sanphamnew)):
-                foreach ($sanphamnew as $sp):
-                    extract($sp); // Giải nén biến: $idsp, $tensp, $giasp, $img
-                    $hinhanh = "uploads/" . $img;
-                    if (!is_file($hinhanh))
-                        $hinhanh = "uploads/no_image.png";
-                    $linksp = "index.php?act=sanphamct&idsp=" . $idsp;
-                    ?>
+            <?php foreach ($sanphamnew as $sp): ?>
+                <?php
+                $idsp = $sp['idsp'];
+                $tensp = $sp['tensp'];
+                $giasp = $sp['giasp'];
+                $img = $sp['img'];
 
-                    <div class="boxsp">
-                        <div class="img-container">
-                            <a href="<?= $linksp ?>">
-                                <img src="<?= $hinhanh ?>" alt="<?= htmlspecialchars($tensp) ?>">
-                            </a>
-                        </div>
+                $hinhanh = $img_path . $img;
+                $linksp = "index.php?act=sanphamct&idsp=" . $idsp;
+                ?>
 
-                        <p class="tensp">
-                            <a href="<?= $linksp ?>"><?= htmlspecialchars($tensp) ?></a>
-                        </p>
+                <div class="boxsp">
+                    <a href="<?= $linksp ?>">
+                        <img src="<?= $hinhanh ?>" alt="<?= $tensp ?>">
+                    </a>
 
-                        <p class="gia">
-                            <?= number_format($giasp, 0, ',', '.') ?> VNĐ
-                        </p>
+                    <p class="tensp">
+                        <a href="<?= $linksp ?>"><?= $tensp ?></a>
+                    </p>
 
-                        <form action="index.php?act=addcart" method="post" style="margin-top:auto;">
-                            <input type="hidden" name="idsp" value="<?= $idsp ?>">
-                            <input type="hidden" name="tensp" value="<?= htmlspecialchars($tensp) ?>">
-                            <input type="hidden" name="img" value="<?= $img ?>">
-                            <input type="hidden" name="giasp" value="<?= $giasp ?>">
-                            <input type="hidden" name="soluong" value="1">
+                    <p class="gia">
+                        Giá: <?= number_format($giasp) ?> VNĐ
+                    </p>
 
-                            <button type="submit" name="addcart" value="addcart" style="
-                        background: linear-gradient(135deg,#f39c12,#e67e22);
-                        color:#fff;
-                        border:none;
-                        padding:10px 18px;
-                        border-radius:30px;
-                        font-size:14px;
-                        font-weight:bold;
-                        cursor:pointer;
-                        width: 100%;
-                        transition:0.25s;
-                    " onmouseover="this.style.opacity='0.85'; this.style.transform='scale(1.02)'"
-                                onmouseout="this.style.opacity='1'; this.style.transform='scale(1)'">
-                                🛒 Thêm vào giỏ
-                            </button>
-                        </form>
-                    </div>
+                    <!-- ✅ NÚT THÊM GIỎ (CSS THẲNG) -->
+                    <form action="index.php?act=addcart" method="post" style="text-align:center;margin-top:8px;">
+                        <input type="hidden" name="idsp" value="<?= $idsp ?>">
+                        <input type="hidden" name="tensp" value="<?= $tensp ?>">
+                        <input type="hidden" name="img" value="<?= $img ?>">
+                        <input type="hidden" name="giasp" value="<?= $giasp ?>">
 
-                    <?php
-                endforeach;
-            else:
-                echo "<p>Đang cập nhật sản phẩm...</p>";
-            endif;
-            ?>
+                        <button type="submit" name="addcart" style="
+                background: linear-gradient(135deg,#f39c12,#e67e22);
+                color:#fff;
+                border:none;
+                padding:8px 14px;
+                border-radius:6px;
+                font-size:14px;
+                font-weight:bold;
+                cursor:pointer;
+                transition:0.25s;
+            " onmouseover="this.style.transform='scale(1.05)';this.style.opacity='0.9'"
+                            onmouseout="this.style.transform='scale(1)';this.style.opacity='1'">
+                            🛒 Thêm vào giỏ
+                        </button>
+                    </form>
+                </div>
+
+            <?php endforeach; ?>
         </div>
-    </div>
 
+    </div>
     <div class="boxphai">
         <?php include "boxphai.php"; ?>
     </div>
-</div>

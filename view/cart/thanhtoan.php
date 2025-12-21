@@ -285,7 +285,7 @@ $user_address = $_SESSION['user']['address'] ?? '';
                                         </div>
                                         <div class="item-price"><?= number_format($tt, 0, ',', '.') ?>đ</div>
                                     </div>
-                                <?php
+                                    <?php
                                 endforeach;
                             endif;
                             ?>
