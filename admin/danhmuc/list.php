@@ -297,7 +297,7 @@
 </style>
 <div class="row">
     <div class="row frmtitle">
-        <h1>DANH SÁCH LOẠI SÁCH</h1>
+        <h1>DANH SÁCH LOẠI SÁCH!</h1>
     </div>
     <?php if (isset($thongbao) && $thongbao != ""): ?>
         <div

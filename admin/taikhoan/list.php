@@ -42,7 +42,7 @@
                 <td>' . htmlspecialchars($tel) . '</td>
                 <td style="text-align: center;">' . ($role == 1 ? '<b style="color:red;">Admin</b>' : 'User') . '</td>
                 <td style="text-align: center;">
-                    <a href="' . $suatk . '"><input type="button" value="Sửa" style="cursor:pointer;"></a>
+                    <a href="http://localhost/bookstore/index.php?act=edit_taikhoan"><input type="button" value="Sửa" style="cursor:pointer;"></a>
                     <a href="' . $xoatk . '" onclick="return confirm(\'Bạn có chắc chắn muốn xóa tài khoản này?\')">
                         <input type="button" value="Xóa" style="cursor:pointer; background-color: #ff4d4d; color: white; border: none; padding: 3px 10px;">
                     </a>
