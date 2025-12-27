@@ -75,7 +75,7 @@ function bill_insert_id($iduser, $hoten, $sdt, $diachi, $tongthanhtoan, $ngaydat
 {
     // Nếu không đăng nhập (iduser = 0), gán NULL cho DB
     $iduser = ($iduser > 0) ? $iduser : null;
-
+    $ngaydat = date('Y-m-d H:i:s'); // Định dạng chuẩn: Năm-Tháng-Ngày Giờ:Phút:Giây
     $sql = "INSERT INTO hoadon (iduser, hoten, sdt, diachi, tongthanhtoan, ngaydat) 
             VALUES (?, ?, ?, ?, ?, ?)";
     return pdo_execute_return_lastInsertId($sql, $iduser, $hoten, $sdt, $diachi, $tongthanhtoan, $ngaydat);
@@ -127,4 +127,111 @@ function delete_bill($idhd)
 
     $sql_bill = "DELETE FROM hoadon WHERE idhd = ?";
     pdo_execute($sql_bill, $idhd);
+}
+// Lấy thông tin chi tiết các sản phẩm trong 1 hóa đơn
+function loadall_cart_detail($idhd)
+{
+    // JOIN bảng chitiethoadon với bảng sanpham để lấy tên và ảnh sản phẩm
+    $sql = "SELECT ct.*, sp.tensp, sp.img 
+            FROM chitiethoadon ct 
+            JOIN sanpham sp ON ct.idsp = sp.idsp 
+            WHERE ct.idhd = $idhd";
+    return pdo_query($sql);
+}
+
+function loadone_hoadon($idhd)
+{
+    $sql = "SELECT * FROM hoadon WHERE idhd = $idhd";
+    return pdo_query_one($sql);
+}
+
+// Lấy thông tin chung của 1 hóa đơn (để hiển thị tiêu đề)
+function loadone_bill($idhd)
+{
+    $sql = "SELECT * FROM hoadon WHERE idhd = " . $idhd;
+    return pdo_query_one($sql);
+}
+function loadall_thongke()
+{
+    $sql = "SELECT 
+                dm.iddm as madm, 
+                dm.tendm as tendm, 
+                count(sp.idsp) as countsp, 
+                min(sp.giasp) as minprice, 
+                max(sp.giasp) as maxprice, 
+                avg(sp.giasp) as avgprice";
+    $sql .= " FROM danhmuc dm LEFT JOIN sanpham sp ON dm.iddm = sp.id";
+    $sql .= " GROUP BY dm.iddm, dm.tendm ORDER BY dm.iddm DESC";
+    return pdo_query($sql);
+}
+
+// Hàm lấy các chỉ số tổng quan (Widgets)
+function load_stat_overview()
+{
+    $sql_revenue = "SELECT SUM(tongthanhtoan) as total_revenue FROM hoadon";
+    $sql_orders = "SELECT COUNT(idhd) as total_orders FROM hoadon";
+    $sql_prods = "SELECT COUNT(idsp) as total_prods FROM sanpham";
+
+    $res['revenue'] = pdo_query_one($sql_revenue)['total_revenue'] ?? 0;
+    $res['orders'] = pdo_query_one($sql_orders)['total_orders'] ?? 0;
+    $res['prods'] = pdo_query_one($sql_prods)['total_prods'] ?? 0;
+    return $res;
+}
+
+
+// 1. Hàm load danh sách hóa đơn theo User
+function loadall_bill_user($iduser)
+{
+    // Tên bảng là 'hoadon', cột ID user là 'iduser'
+    $sql = "SELECT * FROM hoadon WHERE iduser = $iduser ORDER BY idhd DESC";
+    return pdo_query($sql);
+}
+
+// 2. Hàm đếm số lượng mặt hàng trong một hóa đơn
+function loadall_cart_count($idhd)
+{
+    // Dựa vào bảng 'chitiethoadon' trong sơ đồ của bạn
+    $sql = "SELECT * FROM chitiethoadon WHERE idhd = $idhd";
+    $list = pdo_query($sql);
+    return sizeof($list);
+}
+
+// 3. Hàm lấy trạng thái hóa đơn (Nếu bảng hoadon của bạn chưa có cột status, 
+// bạn có thể thêm vào DB hoặc mặc định hiển thị)
+function get_ttdh($status, $ngaydat)
+{
+    date_default_timezone_set('Asia/Ho_Chi_Minh'); // Đảm bảo múi giờ đồng bộ
+
+    $currentDate = new DateTime(); // Thời gian hiện tại hệ thống
+    $orderDate = new DateTime($ngaydat); // Thời gian lưu trong database
+
+    // Tính toán khoảng cách
+    $interval = $currentDate->diff($orderDate);
+    $daysPassed = $interval->days;
+
+    $time_status = "";
+    if ($daysPassed == 0) {
+        $time_status = "(Mới đặt hôm nay)";
+    } else {
+        $time_status = "(Đã đặt " . $daysPassed . " ngày trước)";
+    }
+
+    switch ($status) {
+        case '0':
+            $s = "Chờ xác nhận " . $time_status;
+            break;
+        case '1':
+            $s = "Đang xử lý " . $time_status;
+            break;
+        case '2':
+            $s = "Đang giao hàng";
+            break;
+        case '3':
+            $s = "Đã giao hàng";
+            break;
+        default:
+            $s = "Mới đặt";
+            break;
+    }
+    return $s;
 }

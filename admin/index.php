@@ -5,6 +5,7 @@ include "../model/danhmuc.php";
 include "../model/sanpham.php";
 include "../model/taikhoan.php";
 include "../model/cart.php";
+include "../model/binhluan.php";
 include "header.php";
 
 // Kiểm tra quyền admin nếu cần thiết ở đây
@@ -241,6 +242,54 @@ if (isset($_GET['act']) && ($_GET['act'] != "")) {
             }
             $listbill = loadall_bill();
             include "bill/list.php";
+            break;
+
+        case 'billdetail':
+            if (isset($_GET['idhd']) && ($_GET['idhd'] > 0)) {
+                $bill = loadone_bill($_GET['idhd']); // Lấy thông tin khách hàng
+                $billct = loadall_cart_detail($_GET['idhd']); // Lấy danh sách sản phẩm
+                include "bill/detail.php";
+            }
+            break;
+
+        case 'thongke':
+            $listthongke = loadall_thongke();
+            $overview = load_stat_overview(); // Lấy dữ liệu cho các ô thông số
+            include "thongke/list.php";
+            break;
+
+        case 'bieudo':
+            $listthongke = loadall_thongke();
+            include "thongke/bieudo.php";
+            break;
+
+        case 'dsbl':
+            $listbinhluan = loadall_binhluan_admin();
+            include "binhluan/list.php";
+            break;
+        case 'xoabl':
+            if (isset($_GET['id']))
+                delete_binhluan($_GET['id']);
+            $listbinhluan = loadall_binhluan_admin();
+            include "binhluan/list.php";
+            break;
+
+        case 'delete_selected_bl':
+            if (isset($_POST['delete_selected']) && isset($_POST['selected_id'])) {
+                $ids = $_POST['selected_id']; // Đây là một mảng chứa các ID đã chọn
+
+                // Chuyển mảng ID thành chuỗi cách nhau bởi dấu phẩy (vd: 1,2,3)
+                $ids_string = implode(',', $ids);
+
+                // Gọi hàm xóa hàng loạt trong model
+                delete_selected_binhluan($ids_string);
+
+                $thongbao = "Đã xóa thành công các bình luận đã chọn!";
+            }
+
+            // Sau khi xóa xong, load lại danh sách
+            $listbinhluan = loadall_binhluan_admin();
+            include "binhluan/list.php";
             break;
 
         default:

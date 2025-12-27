@@ -1,3 +1,120 @@
+<style>
+    .binhluan-box {
+        margin-top: 30px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        width: 100%;
+    }
+
+    .binhluan-box .frmtitle h3 {
+        background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-darker) 100%);
+        color: var(--cream-accent);
+        padding: 15px 20px;
+        font-size: 1.1em;
+        text-transform: uppercase;
+        margin: 0;
+        width: 100%;
+    }
+
+    .binhluan-box .frmcontent {
+        background: var(--cream-light) !important;
+        border: 1px solid var(--tan) !important;
+        padding: 25px !important;
+        width: 100%;
+    }
+
+    /* Danh sách bình luận */
+    .bl-list {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 20px;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .bl-item {
+        background: #fff;
+        border-bottom: 1px solid var(--cream-dark);
+        padding: 12px 15px;
+        margin-bottom: 5px;
+        border-radius: 4px;
+    }
+
+    .bl-item strong {
+        color: var(--gold-darker);
+    }
+
+    .bl-item em {
+        color: #999;
+        font-size: 0.85em;
+    }
+
+    /* Form nhập liệu */
+    .comment-form textarea {
+        width: 100%;
+        height: 100px;
+        padding: 15px;
+        border: 2px solid var(--cream-dark);
+        border-radius: 5px;
+        font-family: 'Times New Roman', serif;
+        font-size: 1em;
+        transition: 0.3s;
+        resize: vertical;
+    }
+
+    .comment-form textarea:focus {
+        outline: none;
+        border-color: var(--tan);
+        background: #fff;
+    }
+
+    .btn-gui-bl {
+        margin-top: 15px;
+        background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-darker) 100%);
+        color: #6f5000ff;
+        border: none;
+        padding: 12px 30px;
+        font-weight: bold;
+        text-transform: uppercase;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: 0.3s;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .star-rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+
+    .star-rating input {
+        display: none;
+    }
+
+    .star-rating label {
+        font-size: 25px;
+        color: #ddd;
+        cursor: pointer;
+        transition: 0.2s;
+        padding: 0 2px;
+    }
+
+    /* Hiệu ứng khi di chuột hoặc chọn */
+    .star-rating input:checked~label,
+    .star-rating label:hover,
+    .star-rating label:hover~label {
+        color: #ffc107;
+    }
+
+    .btn-gui-bl:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.2);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <?php
 // 1. Xử lý logic lấy dữ liệu (Nếu Controller chưa xử lý)
 if (isset($_GET['idsp']) && $_GET['idsp'] > 0) {
@@ -52,10 +169,68 @@ if (is_array($onesp)) {
             </div>
         </div>
 
-        <div class="row mb">
-            <div class="boxtitle">BÌNH LUẬN</div>
-            <div class="row boxcontent" id="binhluan">
-                <p style="padding: 20px;">Tính năng bình luận đang cập nhật...</p>
+        <div class="row mb binhluan-box">
+            <div class="frmtitle">
+                <h3><i class="fas fa-comments"></i> KHÁCH HÀNG BÌNH LUẬN</h3>
+            </div>
+            <div class="frmcontent">
+                <ul class="bl-list">
+                    <?php if (!empty($binhluan)): ?>
+                        <?php foreach ($binhluan as $bl): ?>
+                            <li class="bl-item">
+                                <div style="display: flex; justify-content: space-between;">
+                                    <span>
+                                        <strong><i class="fas fa-user-circle"></i> <?= $bl['user'] ?></strong>
+                                        <div class="stars-display" style="color: #ffc107; margin: 5px 0;">
+                                            <?php
+                                            for ($i = 1; $i <= 5; $i++) {
+                                                echo ($i <= $bl['rating']) ? '<i class="fas fa-star"></i>' : '<i class="far fa-star"></i>';
+                                            }
+                                            ?>
+                                        </div>
+                                        <p style="margin: 5px 0 0 0;"><?= $bl['noidung'] ?></p>
+                                    </span>
+                                    <em><i class="far fa-clock"></i> <?= $bl['ngaybinhluan'] ?></em>
+                                </div>
+                            </li>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <li style="text-align: center; color: #999; padding: 20px;">Chưa có bình luận nào cho cuốn sách này.
+                        </li>
+                    <?php endif; ?>
+                </ul>
+
+                <div class="comment-form">
+                    <?php if (isset($_SESSION['user'])): ?>
+                        <form action="index.php?act=sanphamct&idsp=<?= $idsp ?>" method="post">
+                            <input type="hidden" name="idpro" value="<?= $idsp ?>">
+
+                            <div class="rating-container"
+                                style="margin-bottom: 15px; display: flex; align-items: center; gap: 15px;">
+                                <label style="font-weight: bold; color: var(--brown-primary); margin: 0;">Đánh giá của
+                                    bạn:</label>
+                                <div class="star-rating">
+                                    <input type="radio" id="5-stars" name="rating" value="5" checked />
+                                    <label for="5-stars" class="star"><i class="fas fa-star"></i></label>
+                                    <input type="radio" id="4-stars" name="rating" value="4" />
+                                    <label for="4-stars" class="star"><i class="fas fa-star"></i></label>
+                                    <input type="radio" id="3-stars" name="rating" value="3" />
+                                    <label for="3-stars" class="star"><i class="fas fa-star"></i></label>
+                                    <input type="radio" id="2-stars" name="rating" value="2" />
+                                    <label for="2-stars" class="star"><i class="fas fa-star"></i></label>
+                                    <input type="radio" id="1-star" name="rating" value="1" />
+                                    <label for="1-star" class="star"><i class="fas fa-star"></i></label>
+                                </div>
+                            </div>
+
+                            <textarea name="noidung" placeholder="Hãy để lại cảm nhận của bạn về cuốn sách..."
+                                required></textarea>
+                            <div style="text-align: right;">
+                                <input type="submit" name="guibinhluan" class="btn-gui-bl" value="Gửi bình luận ngay">
+                            </div>
+                        </form>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
 
@@ -112,4 +287,5 @@ if (is_array($onesp)) {
         margin-bottom: 20px;
         border-top: none;
     }
-</style>
+
+    </styles>

@@ -156,73 +156,79 @@
         accent-color: var(--gold-primary);
     }
 </style>
+
 <div class="row">
     <div class="row frmtitle">
-        <h1>DANH SÁCH TÀI KHOẢN</h1>
+        <h1>Quản lý bình luận từ khách hàng</h1>
     </div>
+
     <div class="row frmcontent">
-        <div class="row mb10 frmdsloai">
-            <table class="danhmuc-table" width="100%">
+        <form action="index.php?act=delete_selected_bl" method="post">
+            <table>
                 <thead>
                     <tr>
-                        <th>STT</th>
-                        <th>MÃ TÀI KHOẢN</th>
-                        <th>TÊN ĐĂNG NHẬP</th>
-                        <th>EMAIL</th>
-                        <th>ĐỊA CHỈ</th>
-                        <th>ĐIỆN THOẠI</th>
-                        <th>VAI TRÒ</th>
-                        <th>THAO TÁC</th>
+                        <th width="40"></th>
+                        <th width="70">ID</th>
+                        <th width="150">Người dùng</th>
+                        <th>Nội dung bình luận</th>
+                        <th width="200">Sản phẩm</th>
+                        <th width="150">Ngày đăng</th>
+                        <th width="100">Thao tác</th>
                     </tr>
                 </thead>
-
                 <tbody>
-                    <?php
-                    $stt = 1;
-                    if (!empty($listtaikhoan) && is_array($listtaikhoan)) {
-                        foreach ($listtaikhoan as $tk) {
-                            $idtk = $tk['id'];
-                            $user = $tk['user'] ?? '';
-                            $email = $tk['email'] ?? '';
-                            $address = $tk['address'] ?? 'N/A';
-                            $tel = $tk['tel'] ?? 'N/A';
-                            $role = $tk['role'] ?? 0;
-
-                            // Cập nhật lại đường dẫn sửa và xóa đúng với ID
-                            $suatk = 'index.php?act=suatk&id=' . $idtk;
-                            $xoatk = 'index.php?act=xoatk&id=' . $idtk;
-
-                            echo '<tr>
-                                <td style="text-align: center;">' . $stt++ . '</td>
-                                <td style="text-align: center;">' . $idtk . '</td>
-                                <td><strong>' . htmlspecialchars($user) . '</strong></td>
-                                <td>' . htmlspecialchars($email) . '</td>
-                                <td>' . htmlspecialchars($address) . '</td>
-                                <td>' . htmlspecialchars($tel) . '</td>
-                                <td style="text-align: center;">' . ($role == 1 ? '<b style="color:red;">Admin</b>' : 'User') . '</td>
-                                <td style="text-align: center;">
-                                    <a href="' . $suatk . '"><input type="button" value="Sửa" style="cursor:pointer; padding: 3px 10px;"></a>
-                                    <a href="' . $xoatk . '" onclick="return confirm(\'Bạn có chắc chắn muốn xóa tài khoản này?\')">
-                                        <input type="button" value="Xóa" style="cursor:pointer; background-color: #ff4d4d; color: white; border: none; padding: 3px 10px;">
+                    <?php if (isset($listbinhluan) && is_array($listbinhluan)): ?>
+                        <?php foreach ($listbinhluan as $bl): ?>
+                            <?php
+                            extract($bl);
+                            $xoabl = "index.php?act=xoabl&id=" . $id;
+                            ?>
+                            <tr>
+                                <td><input type="checkbox" name="selected_id[]" value="<?= $id ?>"></td>
+                                <td><small>#<?= $id ?></small></td>
+                                <td><span class="user-badge"><?= $user ?></span></td>
+                                <td class="col-noidung">"<?= $noidung ?>"</td>
+                                <td style="color: var(--gold-dark); font-weight: 600;"><?= $tensp ?></td>
+                                <td style="color: #8d6e63; font-size: 0.9em;"><?= $ngaybinhluan ?></td>
+                                <td>
+                                    <a href="<?= $xoabl ?>"
+                                        onclick="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn bình luận này?')">
+                                        <input type="button" class="btn-action btn-delete" value="Xóa">
                                     </a>
                                 </td>
-                            </tr>';
-                        }
-                    } else {
-                        echo '<tr><td colspan="8" style="text-align: center;">Không có tài khoản nào</td></tr>';
-                    }
-                    ?>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="7">Hiện chưa có dữ liệu bình luận nào.</td>
+                        </tr>
+                    <?php endif; ?>
                 </tbody>
             </table>
-        </div>
-        <div class="row mb10">
-            <a href="index.php?act=dangky"><input type="button" value="Nhập thêm"
-                    style="cursor:pointer; padding: 5px 15px;"></a>
-        </div>
-        <?php
-        if (isset($thongbao) && $thongbao != "") {
-            echo '<div style="color: #27ae60; padding: 10px; font-weight: bold;">' . $thongbao . '</div>';
-        }
-        ?>
+
+            <div class="row" style="margin-top: 30px; display: flex; gap: 10px;">
+                <input type="button" class="btn-action btn-check" value="Chọn tất cả" id="check-all">
+                <input type="button" class="btn-action btn-check" value="Bỏ chọn tất cả" id="uncheck-all">
+
+                <button type="submit" name="delete_selected" class="btn-action btn-delete"
+                    onclick="return confirm('Xác nhận xóa tất cả các bình luận đã chọn?')">
+                    Xóa các mục đã chọn
+                </button>
+            </div>
+        </form>
     </div>
 </div>
+
+<script>
+    const btnCheckAll = document.getElementById('check-all');
+    const btnUncheckAll = document.getElementById('uncheck-all');
+    const checkboxes = document.querySelectorAll('input[name="selected_id[]"]');
+
+    btnCheckAll.addEventListener('click', () => {
+        checkboxes.forEach(cb => cb.checked = true);
+    });
+
+    btnUncheckAll.addEventListener('click', () => {
+        checkboxes.forEach(cb => cb.checked = false);
+    });
+</script>

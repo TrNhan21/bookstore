@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 session_start();
 ob_start();
 include "model/pdo.php";
@@ -6,6 +7,7 @@ include "model/sanpham.php";
 include "model/danhmuc.php";
 include "model/taikhoan.php";
 include "model/cart.php";
+include "model/binhluan.php";
 include "global.php";
 include "view/header.php";
 
@@ -253,18 +255,51 @@ switch ($act) {
     case 'sanphamct':
         if (isset($_GET['idsp']) && ($_GET['idsp'] > 0)) {
             $idsp = $_GET['idsp']; // Lấy ID từ URL
-            $onesp = loadone_sanpham($idsp);
+            // --- BỔ SUNG: ĐOẠN XỬ LÝ LƯU BÌNH LUẬN KHI BẤM GỬI ---
+            if (isset($_POST['guibinhluan'])) {
+                $noidung = $_POST['noidung'];
+                $idpro = $_POST['idpro'];
+                $iduser = $_SESSION['user']['id'];
+                $rating = $_POST['rating']; // Lấy số sao từ form
+                $ngaybinhluan = date('Y-m-d H:i:s');
 
+                insert_binhluan($noidung, $iduser, $idpro, $ngaybinhluan, $rating);
+                header("Location: index.php?act=sanphamct&idsp=" . $idpro);
+            }
+            $onesp = loadone_sanpham($idsp);
             if (is_array($onesp)) {
                 extract($onesp);
-                // Sử dụng $iddm (vì bảng sanpham của bạn dùng iddm)
+                // Lưu ý: Dùng $id (mã danh mục từ bảng sanpham) để load sản phẩm cùng loại
                 $sp_cungloai = load_sanpham_cungloai($idsp, $id);
+
+                // Load danh sách bình luận (bao gồm cả cái mới nhất vừa lưu)
+                $binhluan = loadall_binhluan($idsp);
+
                 include "view/sanphamct.php";
             } else {
                 include "view/home.php";
             }
         } else {
             include "view/home.php";
+        }
+        break;
+
+    case 'mybill':
+        if (isset($_SESSION['user'])) {
+            $iduser = $_SESSION['user']['id'];
+            $listbill = loadall_bill_user($iduser);
+            include "view/cart/mybill.php";
+        } else {
+            include "view/home.php";
+        }
+        break;
+
+    case 'billdetail':
+        if (isset($_GET['idhd']) && ($_GET['idhd'] > 0)) {
+            $idhd = $_GET['idhd'];
+            $bill = loadone_hoadon($idhd); // Lấy thông tin chung (người nhận, tổng tiền)
+            $billdetails = loadall_cart_detail($idhd); // Lấy danh sách sản phẩm đã mua
+            include "view/cart/billdetail.php";
         }
         break;
     default:

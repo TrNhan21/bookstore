@@ -28,8 +28,9 @@
     }
 
     .row {
-        max-width: 1400px;
-        margin: 0 auto;
+        max-width: 100%;
+        margin: 0;
+        padding: 0 20px;
     }
 
     /* ==================== TITLE ==================== */
@@ -116,7 +117,7 @@
 
     /* ==================== TABLE ==================== */
     table {
-        width: 100%;
+        width: 100% !important;
         border-collapse: separate;
         border-spacing: 0;
         margin-top: 25px;
@@ -312,19 +313,21 @@
             </tr>
             <?php
             foreach ($listbill as $bill) {
-                extract($bill); // idhd, hoten, sdt, diachi, tongthanhtoan, ngaydat
+                extract($bill);
                 $xoabill = "index.php?act=xoabill&idhd=" . $idhd;
+                $ctbill = "index.php?act=billdetail&idhd=" . $idhd; // Đường dẫn tới trang chi tiết
                 echo '<tr>
-                        <td><b>HB-' . $idhd . '</b></td>
-                        <td>' . $hoten . '</td>
-                        <td>' . $sdt . '</td>
-                        <td>' . $diachi . '</td>
-                        <td>' . number_format($tongthanhtoan) . ' đ</td>
-                        <td>' . $ngaydat . '</td>
-                        <td>
-                            <a href="' . $xoabill . '" onclick="return confirm(\'Bạn có chắc muốn xóa đơn này?\')"><input type="button" value="Xóa"></a>
-                        </td>
-                    </tr>';
+            <td><b>HB-' . $idhd . '</b></td>
+            <td>' . $hoten . '</td>
+            <td>' . $sdt . '</td>
+            <td>' . $diachi . '</td>
+            <td>' . number_format($tongthanhtoan) . ' đ</td>
+            <td>' . $ngaydat . '</td>
+            <td>
+                <a href="' . $ctbill . '"><input type="button" value="Chi tiết" style="background: linear-gradient(135deg, #444 0%, #000 100%); color:white;"></a>
+                <a href="' . $xoabill . '" onclick="return confirm(\'Bạn có chắc muốn xóa đơn này?\')"><input type="button" value="Xóa"></a>
+            </td>
+        </tr>';
             }
             ?>
         </table>
