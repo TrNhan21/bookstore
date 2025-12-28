@@ -50,11 +50,15 @@ if (is_file($hinhpath)) {
                 Giá sách (VNĐ)<br>
                 <input type="number" name="giasp" value="<?= $giasp ?? '' ?>" required>
             </div>
-
+            <div class="row mb10">
+                Số lượng trong kho <br>
+                <input type="number" name="soluong" value="<?= $soluong ?? 0 ?>" min="0" required
+                    style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+            </div>
             <div class="row mb10">
                 Hình ảnh sách<br>
                 <?= $hinhTag ?>
-                <input type="file" name="hinhanh">
+                <input type="file" name="hinh">
                 <input type="hidden" name="old_img" value="<?= $img ?? '' ?>">
             </div>
 

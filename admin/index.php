@@ -87,6 +87,7 @@ if (isset($_GET['act']) && ($_GET['act'] != "")) {
                 $iddm = $_POST['iddm']; // Khớp với name="iddm" trong form của bạn
                 $tensp = $_POST['tensp'];
                 $giasp = $_POST['giasp'];
+                $soluong = $_POST['soluong'];
                 $motasp = $_POST['motasp'];
 
                 // KIỂM TRA AN TOÀN: Tránh lỗi Undefined array key
@@ -108,7 +109,7 @@ if (isset($_GET['act']) && ($_GET['act'] != "")) {
                 }
 
                 // Truyền đúng biến $img vào cột 'img' trong database
-                insert_sanpham($tensp, $giasp, $img, $motasp, $iddm);
+                insert_sanpham($tensp, $giasp, $img, $motasp, $iddm, $soluong);
                 $thongbao = "Thêm sản phẩm thành công!";
             }
             $listdm = loadall_danhmuc();
@@ -173,25 +174,30 @@ if (isset($_GET['act']) && ($_GET['act'] != "")) {
                 $tensp = $_POST['tensp'];
                 $giasp = $_POST['giasp'];
                 $motasp = $_POST['motasp'];
+                $soluong = $_POST['soluong'];
 
-                // 1. Xử lý ảnh
-                $img = $_FILES['hinhanh']['name'];
-                if ($img != "") {
-                    // Nếu người dùng chọn ảnh mới
+                // KIỂM TRA FILE AN TOÀN
+                // Kiểm tra xem khóa 'hinh' có tồn tại trong $_FILES và có tên file không
+                if (isset($_FILES['hinh']) && $_FILES['hinh']['name'] != "") {
+                    $hinh = $_FILES['hinh']['name'];
                     $target_dir = "../uploads/";
-                    $target_file = $target_dir . basename($img);
-                    move_uploaded_file($_FILES["hinhanh"]["tmp_name"], $target_file);
+                    $target_file = $target_dir . basename($_FILES["hinh"]["name"]);
+
+                    if (move_uploaded_file($_FILES["hinh"]["tmp_name"], $target_file)) {
+                        // Upload thành công
+                    }
                 } else {
-                    // Nếu người dùng KHÔNG chọn ảnh mới, lấy lại tên ảnh cũ từ input hidden
-                    $img = $_POST['old_img'];
+                    // Nếu không chọn ảnh mới, lấy lại tên ảnh cũ từ input hidden 'old_img'
+                    $hinh = $_POST['old_img'];
                 }
 
-                // 2. Gọi hàm update trong Model
-                update_sanpham($idsp, $tensp, $giasp, $img, $motasp, $iddm);
-                $thongbao = "Cập nhật sản phẩm thành công!";
+                update_sanpham($idsp, $iddm, $tensp, $giasp, $motasp, $hinh, $soluong);
+                $thongbao = "Cập nhật thành công";
             }
+
+            // Load lại dữ liệu để hiển thị danh sách
             $listdm = loadall_danhmuc();
-            $listsp = loadall_sanpham();
+            $listsanpham = loadall_sanpham("", 0);
             include "sanpham/list.php";
             break;
 
@@ -246,8 +252,9 @@ if (isset($_GET['act']) && ($_GET['act'] != "")) {
 
         case 'billdetail':
             if (isset($_GET['idhd']) && ($_GET['idhd'] > 0)) {
-                $bill = loadone_bill($_GET['idhd']); // Lấy thông tin khách hàng
-                $billct = loadall_cart_detail($_GET['idhd']); // Lấy danh sách sản phẩm
+                $idhd = $_GET['idhd'];
+                $bill = loadone_bill($idhd);   // Lấy thông tin khách hàng, tổng tiền
+                $billct = loadall_cart($idhd); // Lấy danh sách sách khách đã mua
                 include "bill/detail.php";
             }
             break;
@@ -291,7 +298,17 @@ if (isset($_GET['act']) && ($_GET['act'] != "")) {
             $listbinhluan = loadall_binhluan_admin();
             include "binhluan/list.php";
             break;
+        case 'update_status':
+            if (isset($_POST['capnhat_tt']) && ($_POST['capnhat_tt'])) {
+                $idhd = $_POST['idhd'];
+                $new_status = $_POST['new_status'];
+                update_bill_status($idhd, $new_status);
 
+                // Chuyển hướng về trang chi tiết vừa sửa thay vì trang danh sách (nếu muốn)
+                header("Location: index.php?act=billdetail&idhd=" . $idhd);
+                exit();
+            }
+            break;
         default:
             include "home.php";
             break;

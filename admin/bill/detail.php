@@ -1,148 +1,192 @@
 <style>
-    :root {
-        --gold-primary: #b8860b;
-        --gold-dark: #8b6914;
-        --gold-darker: #6d5419;
-        --brown-primary: #5d4e37;
-        --cream-light: #faf8f3;
-        --cream-medium: #f5f1e8;
-        --cream-dark: #e8dcc8;
-        --cream-accent: #fff9e6;
-        --tan: #d4a574;
-        --text-primary: #3e2723;
-        --red-primary: #c0392b;
-    }
+:root {
+    --gold-primary: #b8860b;
+    --gold-dark: #8b6914;
+    --gold-darker: #6d5419;
+    --brown-primary: #5d4e37;
+    --cream-light: #faf8f3;
+    --cream-medium: #f5f1e8;
+    --cream-dark: #e8dcc8;
+    --cream-accent: #fff9e6;
+    --tan: #d4a574;
+    --text-primary: #3e2723;
+    --red-primary: #c0392b;
+}
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+/* Reset & Base */
+.row {
+    width: 100%;
+    margin: 0 auto;
+}
 
-    body {
-        font-family: 'Times New Roman', serif;
-        background: linear-gradient(135deg, var(--cream-medium) 0%, var(--cream-dark) 100%);
-        padding: 10px;
-        min-height: 100vh;
-    }
+/* ==================== TITLE ==================== */
+.frmtitle {
+    background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-darker) 100%);
+    padding: 25px;
+    border-bottom: 5px solid var(--tan);
+    border-radius: 10px 10px 0 0;
+    text-align: center;
+}
 
-    /* Căn rộng 100% màn hình */
-    .row {
-        width: 100%;
-        max-width: 100% !important;
-        margin: 0 auto;
-    }
+.frmtitle h1 {
+    font-size: 1.8em;
+    color: var(--cream-accent);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    margin: 0;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
 
-    /* ==================== TITLE ==================== */
-    .frmtitle {
-        background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-darker) 100%);
-        padding: 20px 30px;
-        border-bottom: 5px solid var(--tan);
-        border-radius: 10px 10px 0 0;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    }
+/* ==================== CONTENT CONTAINER ==================== */
+.frmcontent {
+    padding: 30px;
+    background: white;
+    border: 1px solid var(--cream-dark);
+    border-top: none;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
 
-    .frmtitle h1 {
-        font-size: 1.6em;
-        color: var(--cream-accent);
-        text-transform: uppercase;
-        text-align: center;
-        letter-spacing: 2px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    }
+/* Box Trạng thái & Thông tin */
+.status-box,
+.info-box {
+    background: var(--cream-light);
+    border: 1px solid var(--tan) !important;
+    padding: 20px !important;
+    border-radius: 8px;
+    margin-bottom: 25px;
+}
 
-    /* ==================== CONTENT ==================== */
-    .frmcontent {
-        padding: 25px;
-        background: linear-gradient(135deg, var(--cream-light) 0%, var(--cream-medium) 100%);
-        border-radius: 0 0 10px 10px;
-        box-shadow: 0 6px 20px rgba(93, 78, 55, 0.15);
-    }
+.status-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--cream-accent);
+}
 
-    /* Box Thông tin khách hàng */
-    .info-box {
-        margin-bottom: 25px;
-        border: 2px solid var(--tan) !important;
-        padding: 25px !important;
-        background: var(--cream-accent) !important;
-        border-radius: 8px;
-        box-shadow: inset 0 0 10px rgba(184, 134, 11, 0.1);
-    }
+.status-box select {
+    padding: 8px 15px;
+    border: 1.5px solid var(--tan);
+    border-radius: 4px;
+    font-family: 'Times New Roman', serif;
+    outline: none;
+    color: var(--text-primary);
+    font-weight: bold;
+}
 
-    .info-box p {
-        margin-bottom: 10px;
-        font-size: 1.1em;
-        color: var(--text-primary);
-    }
+/* Grid thông tin khách hàng */
+.info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
 
-    .info-box strong {
-        color: var(--gold-darker);
-        margin-right: 5px;
-    }
+.info-item p {
+    margin-bottom: 12px;
+    font-size: 1.1em;
+    color: var(--text-primary);
+    border-bottom: 1px dashed var(--tan);
+    padding-bottom: 5px;
+}
 
-    /* ==================== TABLE ==================== */
-    table {
-        width: 100% !important;
-        border-collapse: separate;
-        border-spacing: 0;
-        background-color: white;
-        border-radius: 8px;
-        overflow: hidden;
-        border: 1px solid var(--tan);
-        margin-bottom: 20px;
-    }
+.info-item strong {
+    color: var(--gold-darker);
+    display: inline-block;
+    width: 120px;
+}
 
-    th {
-        background: linear-gradient(135deg, var(--gold-dark) 0%, var(--gold-darker) 100%);
-        color: white;
-        padding: 15px;
-        text-transform: uppercase;
-        font-weight: 700;
-    }
+/* ==================== TABLE STYLE ==================== */
+.detail-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--tan);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 10px;
+}
 
-    td {
-        padding: 15px;
-        text-align: center;
-        border-bottom: 1px solid var(--cream-dark);
-        vertical-align: middle;
-    }
+.detail-table thead th {
+    background: var(--brown-primary);
+    color: var(--cream-accent);
+    padding: 15px;
+    font-size: 0.9em;
+    letter-spacing: 1px;
+}
 
-    /* Ảnh sản phẩm */
-    td img {
-        border-radius: 5px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        transition: 0.3s;
-    }
+.detail-table tbody td {
+    padding: 15px;
+    border-bottom: 1px solid var(--cream-dark);
+    color: var(--text-primary);
+}
 
-    td img:hover {
-        transform: scale(1.1);
-    }
+.detail-table tbody tr:nth-child(even) {
+    background-color: var(--cream-light);
+}
 
-    /* Tổng tiền hàng cuối */
-    .total-row {
-        background: var(--cream-dark) !important;
-        font-size: 1.2em;
-    }
+.detail-table tbody tr:hover {
+    background-color: var(--cream-accent);
+}
 
-    /* ==================== BUTTONS ==================== */
-    input[type="button"] {
-        padding: 12px 25px;
-        background: linear-gradient(135deg, var(--brown-primary) 0%, #3e2723 100%);
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        font-weight: bold;
-        text-transform: uppercase;
-        transition: 0.3s;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
+.img-product {
+    width: 80px;
+    height: 100px;
+    object-fit: cover;
+    border: 1px solid var(--tan);
+    padding: 3px;
+    background: white;
+    transition: 0.3s;
+}
 
-    input[type="button"]:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
-        filter: brightness(1.2);
-    }
+.img-product:hover {
+    transform: rotate(-3deg) scale(1.1);
+}
+
+/* Dòng tổng tiền */
+.total-row td {
+    background: var(--cream-medium);
+    padding: 20px;
+    font-weight: bold;
+}
+
+/* ==================== BUTTONS ==================== */
+.btn-update {
+    background: var(--gold-dark);
+    color: white;
+    border: none;
+    padding: 9px 20px;
+    margin-left: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-update:hover {
+    background: var(--brown-primary);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-back {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.btn-back input {
+    background: var(--brown-primary);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.btn-back input:hover {
+    filter: brightness(1.2);
+    transform: translateX(-5px);
+}
 </style>
 
 <div class="row">
@@ -150,25 +194,40 @@
         <h1>CHI TIẾT ĐƠN HÀNG: HB-<?= $bill['idhd'] ?></h1>
     </div>
 
-    <div class="row frmcontent info-box">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px;">
-            <div>
-                <p><strong><i class="fas fa-user"></i> Người đặt:</strong> <?= $bill['hoten'] ?></p>
-                <p><strong><i class="fas fa-phone"></i> Điện thoại:</strong> <?= $bill['sdt'] ?></p>
-            </div>
-            <div>
-                <p><strong><i class="fas fa-map-marker-alt"></i> Địa chỉ:</strong> <?= $bill['diachi'] ?></p>
-                <p><strong><i class="fas fa-calendar-alt"></i> Ngày đặt:</strong> <?= $bill['ngaydat'] ?></p>
+    <div class="row frmcontent">
+        <div class="status-box">
+            <form action="index.php?act=update_status" method="post">
+                <input type="hidden" name="idhd" value="<?= $bill['idhd'] ?>">
+                <label style="font-weight: bold; color: var(--text-primary);">TRẠNG THÁI: </label>
+                <select name="new_status">
+                    <option value="0" <?= ($bill['bill_status'] == 0) ? 'selected' : '' ?>>Mới (Chờ xác nhận)</option>
+                    <option value="1" <?= ($bill['bill_status'] == 1) ? 'selected' : '' ?>>Đang xử lý</option>
+                    <option value="2" <?= ($bill['bill_status'] == 2) ? 'selected' : '' ?>>Đang giao hàng</option>
+                    <option value="3" <?= ($bill['bill_status'] == 3) ? 'selected' : '' ?>>Hoàn tất</option>
+                    <option value="4" <?= ($bill['bill_status'] == 4) ? 'selected' : '' ?>>Hủy đơn</option>
+                </select>
+                <button type="submit" name="capnhat_tt" class="btn-update" value="1">CẬP NHẬT</button>
+            </form>
+        </div>
+
+        <div class="info-box">
+            <div class="info-grid">
+                <div class="info-item">
+                    <p><strong><i class="fas fa-user"></i> Người đặt:</strong> <?= $bill['hoten'] ?></p>
+                    <p><strong><i class="fas fa-phone"></i> Điện thoại:</strong> <?= $bill['sdt'] ?></p>
+                </div>
+                <div class="info-item">
+                    <p><strong><i class="fas fa-map-marker-alt"></i> Địa chỉ:</strong> <?= $bill['diachi'] ?></p>
+                    <p><strong><i class="fas fa-calendar-alt"></i> Ngày đặt:</strong> <?= $bill['ngaydat'] ?></p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="row frmcontent">
-        <table>
+        <table class="detail-table">
             <thead>
                 <tr>
                     <th>ẢNH</th>
-                    <th>SẢN PHẨM</th>
+                    <th style="text-align: left;">SẢN PHẨM</th>
                     <th>GIÁ</th>
                     <th>SỐ LƯỢNG</th>
                     <th>THÀNH TIỀN</th>
@@ -176,24 +235,35 @@
             </thead>
             <tbody>
                 <?php foreach ($billct as $item): ?>
-                    <tr>
-                        <td><img src="../uploads/<?= $item['img'] ?>" width="100" style="border: 1px solid var(--tan)"></td>
-                        <td style="text-align: left; font-weight: bold;"><?= $item['tensp'] ?></td>
-                        <td><?= number_format($item['dongia']) ?> đ</td>
-                        <td><?= $item['soluong'] ?></td>
-                        <td><b style="color: var(--gold-dark);"><?= number_format($item['thanhtien']) ?> đ</b></td>
-                    </tr>
+                <tr>
+                    <td width="120">
+                        <img src="../uploads/<?= $item['img'] ?>" class="img-product">
+                    </td>
+                    <td style="text-align: left;">
+                        <span style="font-size: 1.1em; font-weight: bold; color: var(--brown-primary);">
+                            <?= $item['tensp'] ?>
+                        </span>
+                    </td>
+                    <td><?= number_format($item['dongia']) ?> đ</td>
+                    <td>x<?= $item['soluong'] ?></td>
+                    <td>
+                        <b style="color: var(--gold-darker);"><?= number_format($item['thanhtien']) ?> đ</b>
+                    </td>
+                </tr>
                 <?php endforeach; ?>
+
                 <tr class="total-row">
-                    <td colspan="4" style="text-align: right; font-weight: bold;">TỔNG THANH TOÁN:</td>
-                    <td style="color: var(--red-primary); font-size: 1.3em; font-weight: bold;">
+                    <td colspan="4" style="text-align: right; text-transform: uppercase; letter-spacing: 1px;">
+                        Tổng thanh toán:
+                    </td>
+                    <td style="color: var(--red-primary); font-size: 1.4em;">
                         <?= number_format($bill['tongthanhtoan']) ?> đ
                     </td>
                 </tr>
             </tbody>
         </table>
 
-        <div class="row mb10" style="display: flex; justify-content: center; margin-top: 30px;">
+        <div class="btn-back">
             <a href="index.php?act=listbill">
                 <input type="button" value="← Quay lại danh sách đơn hàng">
             </a>

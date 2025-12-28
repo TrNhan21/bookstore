@@ -73,10 +73,7 @@ function get_tong_donhang()
 
 function bill_insert_id($iduser, $hoten, $sdt, $diachi, $tongthanhtoan, $ngaydat)
 {
-    // Nếu không đăng nhập (iduser = 0), gán NULL cho DB
-    $iduser = ($iduser > 0) ? $iduser : null;
-    $ngaydat = date('Y-m-d H:i:s'); // Định dạng chuẩn: Năm-Tháng-Ngày Giờ:Phút:Giây
-    $sql = "INSERT INTO hoadon (iduser, hoten, sdt, diachi, tongthanhtoan, ngaydat) 
+    $sql = "INSERT INTO hoadon(iduser, hoten, sdt, diachi, tongthanhtoan, ngaydat) 
             VALUES (?, ?, ?, ?, ?, ?)";
     return pdo_execute_return_lastInsertId($sql, $iduser, $hoten, $sdt, $diachi, $tongthanhtoan, $ngaydat);
 }
@@ -113,12 +110,6 @@ function get_bill_details($idhd)
 // 3. QUẢN LÝ DÀNH CHO ADMIN
 // ==========================================
 
-function loadall_bill()
-{
-    $sql = "SELECT * FROM hoadon ORDER BY idhd DESC";
-    return pdo_query($sql);
-}
-
 function delete_bill($idhd)
 {
     // Xóa chi tiết trước để tránh lỗi ràng buộc khóa ngoại
@@ -146,11 +137,7 @@ function loadone_hoadon($idhd)
 }
 
 // Lấy thông tin chung của 1 hóa đơn (để hiển thị tiêu đề)
-function loadone_bill($idhd)
-{
-    $sql = "SELECT * FROM hoadon WHERE idhd = " . $idhd;
-    return pdo_query_one($sql);
-}
+
 function loadall_thongke()
 {
     $sql = "SELECT 
@@ -182,9 +169,9 @@ function load_stat_overview()
 // 1. Hàm load danh sách hóa đơn theo User
 function loadall_bill_user($iduser)
 {
-    // Tên bảng là 'hoadon', cột ID user là 'iduser'
-    $sql = "SELECT * FROM hoadon WHERE iduser = $iduser ORDER BY idhd DESC";
-    return pdo_query($sql);
+    // Câu lệnh này đảm bảo: Tài khoản nào thì thấy đơn hàng đó
+    $sql = "SELECT * FROM hoadon WHERE iduser = ? ORDER BY idhd DESC";
+    return pdo_query($sql, $iduser);
 }
 
 // 2. Hàm đếm số lượng mặt hàng trong một hóa đơn
@@ -235,3 +222,61 @@ function get_ttdh($status, $ngaydat)
     }
     return $s;
 }
+function update_kho_hang($idsp, $soluong_mua)
+{
+    // Trừ số lượng trong bảng sanpham dựa trên idsp
+    $sql = "UPDATE sanpham SET soluong = soluong - ? WHERE idsp = ?";
+    pdo_execute($sql, $soluong_mua, $idsp);
+}
+// Hàm trả về chuỗi hiển thị tên trạng thái
+function get_status_text($status_number)
+{
+    switch ($status_number) {
+        case 0:
+            return '<span style="color: #007bff;">Đơn hàng mới</span>';
+        case 1:
+            return '<span style="color: #ffc107;">Đang xử lý</span>';
+        case 2:
+            return '<span style="color: #17a2b8;">Đang giao hàng</span>';
+        case 3:
+            return '<span style="color: #28a745; font-weight: bold;">Đã giao / Hoàn tất</span>';
+        case 4:
+            return '<span style="color: #dc3545;">Đã hủy</span>';
+        default:
+            return "Không xác định";
+    }
+}
+
+// Hàm cập nhật trạng thái vào Database
+// Cập nhật trạng thái đơn hàng
+function update_bill_status($idhd, $status)
+{
+    $sql = "UPDATE hoadon SET bill_status = ? WHERE idhd = ?";
+    pdo_execute($sql, $status, $idhd);
+}
+
+// Load tất cả hóa đơn
+function loadone_bill($idhd)
+{
+    $sql = "SELECT * FROM hoadon WHERE idhd = " . $idhd;
+    $bill = pdo_query_one($sql);
+    return $bill;
+}
+// Lấy danh sách sản phẩm của đơn hàng đó
+function loadall_cart($idhd)
+{
+    // Sử dụng INNER JOIN để lấy thêm tensp và img từ bảng sanpham
+    $sql = "SELECT ct.*, sp.tensp, sp.img 
+            FROM chitiethoadon ct
+            INNER JOIN sanpham sp ON ct.idsp = sp.idsp
+            WHERE ct.idhd = ?";
+    return pdo_query($sql, $idhd);
+}
+function loadall_bill()
+{
+    // Truy vấn tất cả các cột từ bảng hoadon, sắp xếp đơn mới nhất lên đầu
+    $sql = "SELECT * FROM hoadon ORDER BY idhd DESC";
+    $listbill = pdo_query($sql);
+    return $listbill;
+}
+?>

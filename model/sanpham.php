@@ -1,9 +1,9 @@
 <?php
-function insert_sanpham($tensp, $giasp, $img, $motasp, $iddm)
+function insert_sanpham($tensp, $giasp, $hinh, $motasp, $iddm, $soluong)
 {
-    // Lưu ý: Cột id ở cuối bảng của bạn chính là id danh mục
-    $sql = "INSERT INTO sanpham(tensp, giasp, img, motasp, id) 
-            VALUES('$tensp', '$giasp', '$img', '$motasp', '$iddm')";
+    // Câu lệnh SQL thêm cột soluong vào bảng sanpham
+    $sql = "INSERT INTO sanpham(tensp, giasp, img, motasp, id, soluong) 
+            VALUES ('$tensp', '$giasp', '$hinh', '$motasp', '$iddm', '$soluong')";
     pdo_execute($sql);
 }
 
@@ -68,14 +68,15 @@ function loadall_sanpham($kyw = "", $iddm = 0)
     return $listsanpham;
 }
 
-function update_sanpham($idsp, $tensp, $giasp, $img, $motasp, $iddm)
+function update_sanpham($idsp, $iddm, $tensp, $giasp, $motasp, $hinh, $soluong)
 {
     $sql = "UPDATE sanpham SET 
-            tensp = '" . $tensp . "', 
-            giasp = '" . $giasp . "', 
-            img = '" . $img . "', 
-            motasp = '" . $motasp . "', 
-            id = '" . $iddm . "' 
+                id = '$iddm', 
+                tensp = '$tensp', 
+                giasp = '$giasp', 
+                motasp = '$motasp', 
+                img = '$hinh', 
+                soluong = '$soluong' 
             WHERE idsp = " . $idsp;
     pdo_execute($sql);
 }
@@ -110,5 +111,16 @@ function delete_selected_sanpham($ids)
         'success' => $count_success,
         'errors' => $error_names
     ];
+}
+function update_soluong_kho($idsp, $soluong_mua)
+{
+    // Câu lệnh SQL trừ số lượng hiện có cho số lượng vừa mua
+    $sql = "UPDATE sanpham SET soluong = soluong - ? WHERE idsp = ?";
+    pdo_execute($sql, $soluong_mua, $idsp);
+}
+function count_sanpham_hethang()
+{
+    $sql = "SELECT count(idsp) FROM sanpham WHERE soluong <= 0";
+    return pdo_query_value($sql);
 }
 ?>

@@ -120,13 +120,13 @@
 if (isset($_GET['idsp']) && $_GET['idsp'] > 0) {
     $idsp_get = $_GET['idsp'];
     $onesp = loadone_sanpham($idsp_get);
-    // Thay 'id' bằng tên cột mã loại thực tế trong DB của bạn (ví dụ: 'iddm' hoặc 'id_danhmuc')
+    // Lưu ý: Sử dụng cột 'id' (mã danh mục) từ bảng sanpham để load cùng loại
     $sp_cungloai = load_sanpham_cungloai($idsp_get, $onesp['id']);
 }
 
 // 2. Giải nén dữ liệu sản phẩm
 if (is_array($onesp)) {
-    extract($onesp); // Tạo ra $idsp, $tensp, $giasp, $img, $motasp...
+    extract($onesp); // Tạo ra $idsp, $tensp, $giasp, $img, $motasp, $soluong...
 }
 ?>
 
@@ -157,13 +157,29 @@ if (is_array($onesp)) {
                             <b style="color: #d9534f;">Giá: </b><?= number_format($giasp) ?> VNĐ
                         </div>
 
-                        <div class="quantity" style="margin: 20px 0;">
-                            <label>Số lượng: </label>
-                            <input type="number" name="soluong" value="1" min="1"
-                                style="width: 60px; text-align: center;">
+                        <div class="inventory-status" style="margin-bottom: 20px;">
+                            <?php if ($soluong > 0): ?>
+                                <div style="color: #28a745; font-weight: bold; margin-bottom: 10px;">
+                                    <i class="fas fa-check-circle"></i> Còn hàng (<?= $soluong ?> sản phẩm)
+                                </div>
+                                <div class="quantity" style="margin: 20px 0;">
+                                    <label>Số lượng đặt: </label>
+                                    <input type="number" name="soluong" value="1" min="1" max="<?= $soluong ?>"
+                                        style="width: 70px; text-align: center; padding: 5px;">
+                                </div>
+                                <input type="submit" name="addcart" value="THÊM VÀO GIỎ HÀNG" class="btn-add"
+                                    style="padding: 12px 25px; background: #ff4d4d; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.3s;">
+                            <?php else: ?>
+                                <div
+                                    style="color: #d9534f; font-weight: bold; font-size: 1.2rem; padding: 10px; border: 1px dashed #d9534f; display: inline-block; border-radius: 5px;">
+                                    <i class="fas fa-exclamation-triangle"></i> HIỆN ĐÃ HẾT HÀNG
+                                </div>
+                                <div style="margin-top: 15px;">
+                                    <input type="button" value="HẾT HÀNG" disabled
+                                        style="padding: 12px 25px; background: #ccc; color: #666; border: none; border-radius: 5px; cursor: not-allowed; font-weight: bold;">
+                                </div>
+                            <?php endif; ?>
                         </div>
-                        <input type="submit" name="addcart" value="THÊM VÀO GIỎ HÀNG" class="btn-add"
-                            style="padding: 10px 20px; background: #ff4d4d; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">
                     </div>
                 </form>
             </div>
@@ -199,12 +215,10 @@ if (is_array($onesp)) {
                         </li>
                     <?php endif; ?>
                 </ul>
-
                 <div class="comment-form">
                     <?php if (isset($_SESSION['user'])): ?>
                         <form action="index.php?act=sanphamct&idsp=<?= $idsp ?>" method="post">
                             <input type="hidden" name="idpro" value="<?= $idsp ?>">
-
                             <div class="rating-container"
                                 style="margin-bottom: 15px; display: flex; align-items: center; gap: 15px;">
                                 <label style="font-weight: bold; color: var(--brown-primary); margin: 0;">Đánh giá của
@@ -212,17 +226,10 @@ if (is_array($onesp)) {
                                 <div class="star-rating">
                                     <input type="radio" id="5-stars" name="rating" value="5" checked />
                                     <label for="5-stars" class="star"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="4-stars" name="rating" value="4" />
-                                    <label for="4-stars" class="star"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="3-stars" name="rating" value="3" />
-                                    <label for="3-stars" class="star"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="2-stars" name="rating" value="2" />
-                                    <label for="2-stars" class="star"><i class="fas fa-star"></i></label>
                                     <input type="radio" id="1-star" name="rating" value="1" />
                                     <label for="1-star" class="star"><i class="fas fa-star"></i></label>
                                 </div>
                             </div>
-
                             <textarea name="noidung" placeholder="Hãy để lại cảm nhận của bạn về cuốn sách..."
                                 required></textarea>
                             <div style="text-align: right;">

@@ -211,25 +211,34 @@ switch ($act) {
 
     case 'hoadon':
         if (isset($_POST['dongydathang'])) {
+            // 1. LẤY DỮ LIỆU TỪ FORM (Bắt buộc phải có đoạn này)
             $hoten = $_POST['hoten'];
             $sdt = $_POST['sdt'];
             $diachi = $_POST['diachi'];
-            $tongthanhtoan = $_POST['tongdonhang'];
+            $tongthanhtoan = $_POST['tongdonhang']; // Đảm bảo bên view/thanhtoan.php có input name="tongdonhang"
             $ngaydat = date('Y-m-d H:i:s');
             $iduser = (isset($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : 0;
+
+            // 2. TẠO HÓA ĐƠN VÀ LẤY ID VỪA TẠO
             $idhd = bill_insert_id($iduser, $hoten, $sdt, $diachi, $tongthanhtoan, $ngaydat);
+
+            // 3. XỬ LÝ CHI TIẾT VÀ TRỪ KHO
             if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
                 foreach ($_SESSION['cart'] as $sp) {
                     $idsp = $sp['idsp'];
                     $soluong = $sp['soluong'];
                     $dongia = $sp['giasp'];
                     $thanhtien = $dongia * $soluong;
+
+                    // Lưu vào bảng chitiethoadon
                     insert_chitiethoadon($idhd, $idsp, $soluong, $dongia, $thanhtien);
 
-                    // (Tùy chọn) Cập nhật số lượng tồn kho nếu cần
-                    // update_stock($idsp, $soluong);
+                    // Cập nhật số lượng tồn kho (Hàm này bạn đã viết trong model/sanpham.php)
+                    update_soluong_kho($idsp, $soluong);
                 }
             }
+
+            // 4. XÓA GIỎ HÀNG VÀ THÔNG BÁO
             clear_cart();
             echo "<script>
                 alert('Đặt hàng thành công! Mã đơn hàng của bạn là: #" . $idhd . "');
@@ -237,7 +246,6 @@ switch ($act) {
               </script>";
 
         } else {
-            // Nếu ai đó truy cập index.php?act=hoadon bằng cách gõ URL mà không bấm nút
             header("location: index.php");
         }
         break;
@@ -285,11 +293,17 @@ switch ($act) {
         break;
 
     case 'mybill':
+        // Kiểm tra xem đã đăng nhập chưa
         if (isset($_SESSION['user'])) {
+            // Lấy ID của tài khoản đang đăng nhập hiện tại
             $iduser = $_SESSION['user']['id'];
+
+            // Gọi hàm lấy đơn hàng của ĐÚNG tài khoản này
             $listbill = loadall_bill_user($iduser);
+
             include "view/cart/mybill.php";
         } else {
+            // Nếu chưa đăng nhập thì bắt quay về trang chủ
             include "view/home.php";
         }
         break;
@@ -302,6 +316,7 @@ switch ($act) {
             include "view/cart/billdetail.php";
         }
         break;
+
     default:
         // Nếu không có hành động nào hoặc act sai, sẽ hiện trang chủ
         include "view/home.php";
