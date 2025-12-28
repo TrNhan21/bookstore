@@ -13,7 +13,7 @@
 
             <?php if (isset($user['role']) && $user['role'] == 1): ?>
                 <span class="separator">|</span>
-                <a href="admin/index.php" target="_blank" style="color: #d4a574; font-weight: bold;">
+                <a href="admin/index.php" target="_self" style="color: #d4a574; font-weight: bold;">
                     <i class="fa fa-cogs"></i> Quản trị
                 </a>
             <?php endif; ?>
@@ -23,7 +23,7 @@
                 Thoát <i class="fa fa-sign-out"></i>
             </a>
         </div>
-    <?php
+        <?php
     } else {
         ?>
         <div class="user-guest">
@@ -31,7 +31,7 @@
             <span class="separator">|</span>
             <a href="index.php?act=dangky">Đăng ký</a>
         </div>
-    <?php
+        <?php
     }
     ?>
 </div>

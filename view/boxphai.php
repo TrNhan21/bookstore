@@ -22,7 +22,7 @@
                         <li><a href="index.php?act=edit_taikhoan">Cập nhật tài khoản</a></li>
 
                         <?php if ($role == 1): ?>
-                            <li><a href="admin/index.php" target="_blank"><b style="color:red">Đăng nhập Admin</b></a></li>
+                            <li><a href="admin/index.php" target="_self"><b style="color:red">Đăng nhập Admin</b></a></li>
                         <?php endif; ?>
 
                         <li>

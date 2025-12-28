@@ -1,5 +1,4 @@
 <style>
-    /* Sử dụng lại bộ Root và CSS bạn cung cấp */
     :root {
         --gold-primary: #b8860b;
         --gold-dark: #8b6914;
@@ -13,11 +12,6 @@
         --text-primary: #3e2723;
         --red-primary: #c0392b;
         --red-dark: #a93226;
-    }
-
-    .row {
-        max-width: 1400px;
-        margin: 0 auto;
     }
 
     /* ==================== TITLE & ANIMATION ==================== */
@@ -57,15 +51,18 @@
         font-size: 1.8em;
         color: var(--cream-accent);
         font-weight: 800;
+        letter-spacing: 2px;
         text-transform: uppercase;
         margin: 0;
         text-align: center;
         text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.4);
+        position: relative;
+        z-index: 1;
     }
 
     /* ==================== CONTENT BOX ==================== */
     .frmcontent {
-        padding: 45px 40px;
+        padding: 40px;
         background: linear-gradient(135deg, var(--cream-light) 0%, var(--cream-medium) 100%);
         border-radius: 0 0 10px 10px;
         box-shadow: 0 6px 20px rgba(93, 78, 55, 0.2);
@@ -77,10 +74,10 @@
         border-collapse: separate;
         border-spacing: 0;
         background-color: var(--cream-accent);
+        box-shadow: 0 6px 20px rgba(93, 78, 55, 0.2);
         border-radius: 10px;
         overflow: hidden;
         border: 2px solid var(--tan);
-        margin-top: 20px;
     }
 
     thead tr {
@@ -90,35 +87,49 @@
     th {
         color: var(--cream-accent) !important;
         text-transform: uppercase;
+        font-weight: 700;
         padding: 20px 15px;
+        text-align: center;
         border-bottom: 3px solid var(--tan);
         text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+    }
+
+    tbody tr {
+        transition: all 0.3s ease;
+        border-bottom: 1px solid var(--cream-dark);
     }
 
     tbody tr:hover {
         background: linear-gradient(90deg, var(--cream-medium) 0%, #f5e6d3 100%);
         transform: scale(1.002);
-        transition: 0.3s;
     }
 
     td {
         padding: 18px 15px;
         text-align: center;
         color: var(--text-primary);
-        border-bottom: 1px solid var(--cream-dark);
+        font-weight: 500;
+        background-color: var(--cream-light);
     }
 
     .col-noidung {
         text-align: left !important;
+        padding-left: 20px !important;
         font-style: italic;
+        line-height: 1.6;
         color: var(--brown-primary);
-        max-width: 300px;
+        max-width: 350px;
+    }
+
+    .user-badge {
+        font-weight: 700;
+        color: var(--gold-darker);
     }
 
     /* ==================== BUTTONS ==================== */
     .btn-action {
-        padding: 10px 20px;
-        border-radius: 8px;
+        padding: 8px 18px;
+        border-radius: 6px;
         font-size: 0.85em;
         font-weight: 700;
         cursor: pointer;
@@ -128,32 +139,34 @@
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
     }
 
-    /* Nút Xóa (Đỏ) */
     .btn-delete {
-        background: linear-gradient(135deg, var(--red-primary) 0%, var(--red-dark) 100%) !important;
-        color: white !important;
+        background: linear-gradient(135deg, var(--red-primary) 0%, var(--red-dark) 100%);
+        color: white;
     }
 
     .btn-delete:hover {
+        background: linear-gradient(135deg, var(--red-dark) 0%, #922b21 100%);
         transform: translateY(-3px);
-        box-shadow: 0 6px 15px rgba(192, 57, 43, 0.4) !important;
+        box-shadow: 0 6px 15px rgba(192, 57, 43, 0.4);
     }
 
-    /* Nút chức năng (Vàng/Nâu) */
-    .btn-func {
+    .btn-check {
         background: linear-gradient(135deg, #8b7355 0%, #6d5d47 100%);
         color: var(--cream-accent);
+        margin-right: 10px;
     }
 
-    .btn-func:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 15px rgba(139, 115, 85, 0.4);
+    .btn-check:hover {
+        background: linear-gradient(135deg, #6d5d47 0%, var(--brown-primary) 100%);
+        transform: translateY(-2px);
     }
 
+    /* Checkbox Custom */
     input[type="checkbox"] {
         width: 18px;
         height: 18px;
         accent-color: var(--gold-primary);
+        cursor: pointer;
     }
 </style>
 

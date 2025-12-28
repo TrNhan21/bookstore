@@ -72,7 +72,7 @@
 
                 <?php if (isset($_SESSION['user'])): ?>
                     <?php if ($_SESSION['user']['role'] == 1): ?>
-                        <li><a href="admin/index.php" target="_blank">QUẢN TRỊ</a></li>
+                        <li><a href="admin/index.php" target="_self">QUẢN TRỊ</a></li>
                     <?php endif; ?>
                     <li><a href="index.php?act=thoat">THOÁT (<?= $_SESSION['user']['user'] ?>)</a></li>
                 <?php else: ?>
