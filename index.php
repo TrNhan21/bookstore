@@ -8,6 +8,7 @@ include "model/danhmuc.php";
 include "model/taikhoan.php";
 include "model/cart.php";
 include "model/binhluan.php";
+include "model/gopy.php";
 include "global.php";
 include "view/header.php";
 
@@ -330,7 +331,25 @@ switch ($act) {
     case 'shipping_policy':
         include "view/static/shipping.php";
         break;
+    case 'gopy':
+        include "view/gopy.php";
+        break;
+    case 'hoidap':
+        include "view/hoidap.php";
+        break;
+    case 'send_gopy':
+        if (isset($_POST['btn_gopy'])) {
+            $name = $_POST['name'];
+            $email = $_POST['email'];
+            $noidung = $_POST['noidung'];
 
+            // Gọi hàm từ model/gopy.php
+            insert_gopy($name, $email, $noidung);
+
+            echo "<script>alert('Gửi góp ý thành công!'); window.location.href='index.php?act=gopy';</script>";
+        }
+        include "view/gopy.php";
+        break;
     default:
         // Nếu không có hành động nào hoặc act sai, sẽ hiện trang chủ
         include "view/home.php";

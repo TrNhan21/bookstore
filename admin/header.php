@@ -53,6 +53,7 @@
                 <li><a href="index.php?act=listbill">Đơn hàng</a></li>
                 <li><a href="index.php?act=dsbl">Bình luận</a></li>
                 <li><a href="index.php?act=thongke">Thống kê</a></li>
+                <li><a href="index.php?act=listgy">QUẢN LÝ GÓP Ý</a></li>
                 <li style="margin-left: auto; background: #aa7a00;"><a href="../index.php">Xem Website 🌐</a></li>
             </ul>
         </div>

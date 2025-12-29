@@ -6,6 +6,7 @@ include "../model/sanpham.php";
 include "../model/taikhoan.php";
 include "../model/cart.php";
 include "../model/binhluan.php";
+include "../model/gopy.php";
 include "header.php";
 
 // Kiểm tra quyền admin nếu cần thiết ở đây
@@ -342,6 +343,34 @@ if (isset($_GET['act']) && ($_GET['act'] != "")) {
                 header("location: index.php?act=thongke");
             }
             exit();
+            break;
+
+        // Thêm vào trong switch($act) của admin/index.php
+        case 'view_return':
+            include "../view/static/return_policy.php";
+            break;
+        case 'view_privacy':
+            include "../view/static/privacy_policy.php";
+            break;
+        case 'view_payment':
+            include "../view/static/payment.php";
+            break;
+        case 'view_shipping':
+            include "../view/static/shipping.php";
+            break;
+        case 'listgy':
+            // 1. Lấy dữ liệu từ model
+            $listgopy = loadall_gopy();
+            // 2. Gọi file hiển thị (phải đúng đường dẫn tương đối từ admin/index.php)
+            include "gopy/list.php";
+            break;
+
+        case 'xoagy':
+            if (isset($_GET['id']) && ($_GET['id'] > 0)) {
+                delete_gopy($_GET['id']);
+            }
+            $listgopy = loadall_gopy();
+            include "gopy/list.php";
             break;
         default:
             include "home.php";
