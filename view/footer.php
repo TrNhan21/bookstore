@@ -46,10 +46,10 @@
             <div class="footer-section">
                 <h3>Chính sách</h3>
                 <ul>
-                    <li><a href="chinhsachhoantra.html">Chính sách hoàn trả</a></li>
-                    <li><a href="chinhsachbaomat.html">Chính sách bảo mật</a></li>
-                    <li><a href="#">Phương thức thanh toán</a></li>
-                    <li><a href="#">Giao hàng & Nhận hàng</a></li>
+                    <li><a href="index.php?act=return_policy">Chính sách hoàn trả</a></li>
+                    <li><a href="index.php?act=privacy_policy">Chính sách bảo mật</a></li>
+                    <li><a href="index.php?act=payment_method">Phương thức thanh toán</a></li>
+                    <li><a href="index.php?act=shipping_policy">Giao hàng & Nhận hàng</a></li>
                 </ul>
             </div>
 

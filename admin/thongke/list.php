@@ -165,23 +165,31 @@
     <div class="row frmcontent">
         <div class="stat-container">
             <div class="stat-card bg-revenue">
-                <h3>Tổng Doanh Thu</h3>
-                <div class="value"><?= number_format($overview['revenue']) ?> đ</div>
+                <h3>Tổng Doanh Thu Năm</h3>
+                <div class="value">
+                    <?php
+                    $tong_ca_nam = array_sum(array_column($listthongke_month, 'doanhthu'));
+                    echo number_format($tong_ca_nam);
+                    ?> đ
+                </div>
             </div>
             <div class="stat-card bg-orders">
-                <h3>Tổng Đơn Hàng</h3>
-                <div class="value"><?= number_format($overview['orders']) ?></div>
+                <h3>Đơn Hàng Thành Công</h3>
+                <div class="value">
+                    <?php echo number_format(array_sum(array_column($listthongke_month, 'sodonhang'))); ?>
+                </div>
             </div>
             <div class="stat-card bg-products">
-                <h3>Số Lượng Sản Phẩm</h3>
-                <div class="value"><?= number_format($overview['prods']) ?></div>
+                <h3>Sản Phẩm Theo Danh Mục</h3>
+                <div class="value"><?= count($listthongke) ?> Nhóm</div>
             </div>
         </div>
 
-        <table>
+        <h3 style="margin-bottom: 15px; color: var(--gold-darker);">I. THỐNG KÊ SẢN PHẨM THEO DANH MỤC</h3>
+        <table class="detail-table">
             <thead>
                 <tr>
-                    <th>MÃ DANH MỤC</th>
+                    <th>MÃ DM</th>
                     <th>TÊN DANH MỤC</th>
                     <th>SỐ LƯỢNG SP</th>
                     <th>GIÁ THẤP NHẤT</th>
@@ -194,18 +202,56 @@
                     <tr>
                         <td><b>DM-<?= $tk['madm'] ?></b></td>
                         <td style="text-align: left; padding-left: 20px; font-weight: 600;">
-                            <?= $tk['tendm'] ?>
+                            <a href="index.php?act=listsp_by_dm&iddm=<?= $tk['madm'] ?>"
+                                style="text-decoration: none; color: inherit; display: block;">
+                                <?= $tk['tendm'] ?>
+                                <i class="fas fa-search-plus"
+                                    style="font-size: 0.8em; color: var(--gold-dark); margin-left: 5px;"></i>
+                            </a>
                         </td>
-                        <td><span
-                                style="background: var(--cream-dark); padding: 4px 12px; border-radius: 15px;"><?= $tk['countsp'] ?></span>
+                        <td>
+                            <a href="index.php?act=listsp_by_dm&iddm=<?= $tk['madm'] ?>" style="text-decoration: none;">
+                                <span
+                                    style="background: var(--cream-dark); color: var(--brown-dark); padding: 4px 12px; border-radius: 15px; font-weight: bold;">
+                                    <?= $tk['countsp'] ?>
+                                </span>
+                            </a>
                         </td>
-                        <td><?= number_format($tk['minprice']) ?> đ</td>
-                        <td><?= number_format($tk['maxprice']) ?> đ</td>
+                        <td><?= number_format($tk['minprice'] ?? 0) ?> đ</td>
+                        <td><?= number_format($tk['maxprice'] ?? 0) ?> đ</td>
                         <td style="color: var(--gold-dark); font-weight: bold;">
-                            <?= number_format($tk['avgprice']) ?> đ
+                            <?= number_format($tk['avgprice'] ?? 0) ?> đ
                         </td>
                     </tr>
                 <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <hr style="margin: 40px 0; border: 1px dashed var(--tan);">
+
+        <h3 style="margin: 20px 0; color: var(--gold-darker);">II. DOANH THU THEO THÁNG (NĂM <?= date('Y') ?>)</h3>
+        <table class="detail-table">
+            <thead>
+                <tr style="background: var(--brown-primary); color: white;">
+                    <th>THÁNG</th>
+                    <th>SỐ ĐƠN HÀNG HOÀN TẤT</th>
+                    <th>TỔNG DOANH THU</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($listthongke_month as $month): ?>
+                    <tr>
+                        <td style="font-weight: bold;">Tháng <?= $month['thang'] ?></td>
+                        <td><?= $month['sodonhang'] ?> đơn</td>
+                        <td style="color: var(--red-primary); font-weight: bold;">
+                            <?= number_format($month['doanhthu']) ?> đ
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                <tr style="background: var(--cream-medium); font-weight: bold;">
+                    <td colspan="2" style="text-align: right; font-size: 16px;">TỔNG DOANH THU CẢ NĂM:</td>
+                    <td style="color: #b30000; font-size: 1.4em;"><?= number_format($tong_ca_nam) ?> đ</td>
+                </tr>
             </tbody>
         </table>
 

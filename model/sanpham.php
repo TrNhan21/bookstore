@@ -123,4 +123,32 @@ function count_sanpham_hethang()
     $sql = "SELECT count(idsp) FROM sanpham WHERE soluong <= 0";
     return pdo_query_value($sql);
 }
+function loadall_sanpham_by_danhmuc($iddm)
+{
+    // id trong bảng sanpham là khóa ngoại trỏ tới iddm của danhmuc
+    $sql = "SELECT * FROM sanpham WHERE id = ? ORDER BY idsp DESC";
+    return pdo_query($sql, $iddm);
+}
+function update_view_sanpham_by_dm($iddm)
+{
+    // Tăng lượt xem cho tất cả sản phẩm thuộc danh mục này khi admin vào xem thống kê chi tiết
+    $sql = "UPDATE sanpham SET luotxemsp = luotxemsp + 1 WHERE id = ?";
+    pdo_execute($sql, $iddm);
+}
+function update_view_sanpham($idsp)
+{
+    $sql = "UPDATE sanpham SET luotxemsp = luotxemsp + 1 WHERE idsp = ?";
+    pdo_execute($sql, $idsp); // Truyền $idsp vào dấu ? để bảo mật
+}
+function reset_view_sanpham($iddm = 0)
+{
+    if ($iddm > 0) {
+        // Sửa iddm thành id cho đúng tên cột trong CSDL của bạn
+        $sql = "UPDATE sanpham SET luotxemsp = 0 WHERE id = ?";
+        pdo_execute($sql, $iddm);
+    } else {
+        $sql = "UPDATE sanpham SET luotxemsp = 0";
+        pdo_execute($sql);
+    }
+}
 ?>

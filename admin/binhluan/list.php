@@ -184,6 +184,7 @@
                         <th width="70">ID</th>
                         <th width="150">Người dùng</th>
                         <th>Nội dung bình luận</th>
+                        <th width="120">Đánh giá</th>
                         <th width="200">Sản phẩm</th>
                         <th width="150">Ngày đăng</th>
                         <th width="100">Thao tác</th>
@@ -195,17 +196,34 @@
                             <?php
                             extract($bl);
                             $xoabl = "index.php?act=xoabl&id=" . $id;
+                            // Giả định tên cột trong CSDL của bạn là 'rating' hoặc 'sao'
+                            // Nếu CSDL chưa có cột này, bạn cần thêm vào bảng binhluan
+                            $rating = isset($rating) ? $rating : 5;
                             ?>
                             <tr>
                                 <td><input type="checkbox" name="selected_id[]" value="<?= $id ?>"></td>
                                 <td><small>#<?= $id ?></small></td>
                                 <td><span class="user-badge"><?= $user ?></span></td>
                                 <td class="col-noidung">"<?= $noidung ?>"</td>
+
+                                <td>
+                                    <div style="color: #ffc107; font-size: 13px; white-space: nowrap;">
+                                        <?php
+                                        for ($i = 1; $i <= 5; $i++) {
+                                            if ($i <= $rating) {
+                                                echo '<i class="fas fa-star"></i>';
+                                            } else {
+                                                echo '<i class="far fa-star"></i>';
+                                            }
+                                        }
+                                        ?>
+                                    </div>
+                                </td>
+
                                 <td style="color: var(--gold-dark); font-weight: 600;"><?= $tensp ?></td>
                                 <td style="color: #8d6e63; font-size: 0.9em;"><?= $ngaybinhluan ?></td>
                                 <td>
-                                    <a href="<?= $xoabl ?>"
-                                        onclick="return confirm('Bạn có chắc chắn muốn xóa vĩnh viễn bình luận này?')">
+                                    <a href="<?= $xoabl ?>" onclick="return confirm('Xác nhận xóa?')">
                                         <input type="button" class="btn-action btn-delete" value="Xóa">
                                     </a>
                                 </td>

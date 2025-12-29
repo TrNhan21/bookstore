@@ -164,7 +164,39 @@ function load_stat_overview()
     $res['prods'] = pdo_query_one($sql_prods)['total_prods'] ?? 0;
     return $res;
 }
+// Thống kê doanh thu theo các tháng trong năm hiện tại
 
+
+// Thống kê danh mục: Mỗi danh mục có bao nhiêu sản phẩm, giá cao nhất/thấp nhất
+// Thống kê sản phẩm theo danh mục
+function thongke_danhmuc_sanpham()
+{
+    $sql = "SELECT dm.iddm as madm, dm.tendm as tendm, 
+            COUNT(sp.idsp) as countsp, 
+            MIN(sp.giasp) as minprice, 
+            MAX(sp.giasp) as maxprice, 
+            AVG(sp.giasp) as avgprice
+            FROM danhmuc dm
+            LEFT JOIN sanpham sp ON dm.iddm = sp.id
+            GROUP BY dm.iddm, dm.tendm";
+    return pdo_query($sql);
+}
+
+// Thống kê doanh thu theo tháng (Chỉ lấy các đơn đã Hoàn tất - status 3)
+function thongke_doanhthu_thang()
+{
+    // Lấy doanh thu của tất cả 12 tháng trong năm hiện tại
+    $sql = "SELECT 
+                MONTH(ngaydat) as thang, 
+                COUNT(idhd) as sodonhang, 
+                SUM(tongthanhtoan) as doanhthu 
+            FROM hoadon 
+            WHERE bill_status = 3 
+            AND YEAR(ngaydat) = YEAR(CURDATE()) 
+            GROUP BY MONTH(ngaydat) 
+            ORDER BY MONTH(ngaydat) ASC";
+    return pdo_query($sql);
+}
 
 // 1. Hàm load danh sách hóa đơn theo User
 function loadall_bill_user($iduser)

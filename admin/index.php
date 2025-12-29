@@ -262,9 +262,23 @@ if (isset($_GET['act']) && ($_GET['act'] != "")) {
         case 'thongke':
             $listthongke = loadall_thongke();
             $overview = load_stat_overview(); // Lấy dữ liệu cho các ô thông số
+            $listthongke_dm = thongke_danhmuc_sanpham();
+            $listthongke_month = thongke_doanhthu_thang();
             include "thongke/list.php";
             break;
+        case 'listsp_by_dm':
+            if (isset($_GET['iddm']) && ($_GET['iddm'] > 0)) {
+                $iddm = $_GET['iddm'];
 
+                // 1. Cập nhật lượt xem cho các sản phẩm trong danh mục này
+                // update_view_sanpham_by_dm($iddm);
+
+                // 2. Lấy danh sách sản phẩm sau khi đã tăng lượt xem
+                $list_sp_dm = loadall_sanpham_by_danhmuc($iddm);
+
+                include "thongke/list_sp_dm.php";
+            }
+            break;
         case 'bieudo':
             $listthongke = loadall_thongke();
             include "thongke/bieudo.php";
@@ -308,6 +322,26 @@ if (isset($_GET['act']) && ($_GET['act'] != "")) {
                 header("Location: index.php?act=billdetail&idhd=" . $idhd);
                 exit();
             }
+            break;
+        case 'view_sp_detail':
+            if (isset($_GET['idsp']) && ($_GET['idsp'] > 0)) {
+                $idsp = $_GET['idsp'];
+                $sp = loadone_sanpham($idsp);
+                $listdanhmuc = loadall_danhmuc();
+                include "sanpham/update.php"; // Chỉ hiện form sửa, không tăng view
+            }
+            break;
+        case 'reset_view':
+            $iddm = isset($_GET['iddm']) ? $_GET['iddm'] : 0;
+            reset_view_sanpham($iddm);
+
+            // Sau khi reset xong, quay lại trang danh sách sản phẩm của danh mục đó
+            if ($iddm > 0) {
+                header("location: index.php?act=listsp_by_dm&iddm=" . $iddm);
+            } else {
+                header("location: index.php?act=thongke");
+            }
+            exit();
             break;
         default:
             include "home.php";

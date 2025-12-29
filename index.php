@@ -263,6 +263,7 @@ switch ($act) {
     case 'sanphamct':
         if (isset($_GET['idsp']) && ($_GET['idsp'] > 0)) {
             $idsp = $_GET['idsp']; // Lấy ID từ URL
+            update_view_sanpham($idsp); // Tăng view khi khách click xem
             // --- BỔ SUNG: ĐOẠN XỬ LÝ LƯU BÌNH LUẬN KHI BẤM GỬI ---
             if (isset($_POST['guibinhluan'])) {
                 $noidung = $_POST['noidung'];
@@ -315,6 +316,19 @@ switch ($act) {
             $billdetails = loadall_cart_detail($idhd); // Lấy danh sách sản phẩm đã mua
             include "view/cart/billdetail.php";
         }
+        break;
+
+    case 'return_policy':
+        include "view/static/return_policy.php";
+        break;
+    case 'privacy_policy':
+        include "view/static/privacy_policy.php";
+        break;
+    case 'payment_method':
+        include "view/static/payment.php";
+        break;
+    case 'shipping_policy':
+        include "view/static/shipping.php";
         break;
 
     default:
