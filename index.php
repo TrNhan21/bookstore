@@ -355,6 +355,6 @@ switch ($act) {
         include "view/home.php";
         break;
 }
-
+$dsdm = loadall_danhmuc();
 include "view/footer.php";
 ?>

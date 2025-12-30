@@ -56,12 +56,21 @@
             <div class="footer-section">
                 <h3>Thể loại</h3>
                 <ul>
-                    <li><a href="#">Trinh thám</a></li>
-                    <li><a href="#">Kinh dị</a></li>
-                    <li><a href="#">Kinh tế</a></li>
-                    <li><a href="#">Văn hóa</a></li>
-                    <li><a href="#">Giáo dục</a></li>
-                    <li><a href="#">Truyện tranh</a></li>
+                    <?php
+                    // Kiểm tra nếu biến $dsdm tồn tại và có dữ liệu
+                    if (isset($dsdm) && is_array($dsdm)) {
+                        foreach ($dsdm as $dm) {
+                            // Sử dụng đúng tên cột từ hình ảnh CSDL bạn gửi: iddm và tendm
+                            $id_danhmuc = $dm['iddm'];
+                            $ten_danhmuc = $dm['tendm'];
+
+                            $linkdm = "index.php?act=sanpham&iddm=" . $id_danhmuc;
+                            echo '<li><a href="' . $linkdm . '">' . $ten_danhmuc . '</a></li>';
+                        }
+                    } else {
+                        echo '<li>Đang cập nhật...</li>';
+                    }
+                    ?>
                 </ul>
             </div>
         </div>
