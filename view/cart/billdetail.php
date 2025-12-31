@@ -165,12 +165,56 @@
         border-radius: 4px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-</style>
 
+    /* Bổ sung thêm CSS cho Badge Phương thức thanh toán */
+    .payment-badge {
+        display: inline-block;
+        padding: 6px 15px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: bold;
+        margin-top: 5px;
+    }
+
+    .badge-cod {
+        background-color: #fdf5e6;
+        color: #8b5a2b;
+        border: 1px solid #f5e6d3;
+    }
+
+    .badge-banking {
+        background-color: #e8f4fd;
+        color: #2980b9;
+        border: 1px solid #d1e9ff;
+    }
+</style>
 <?php
+// 1. Xử lý trạng thái đơn hàng
 $st = $bill['bill_status'];
-// Tính toán chiều dài thanh tiến trình (0, 33%, 66%, 100%)
 $progress_width = ($st <= 3) ? ($st * 33.33) : 0;
+
+// 2. Xử lý logic Phương thức thanh toán
+$pttt_text = "";
+$pttt_class = "";
+$pttt_icon = "";
+
+// Kiểm tra nếu có tồn tại cột pttt trong mảng $bill
+if (isset($bill['pttt'])) {
+    if ($bill['pttt'] == 2) {
+        $pttt_text = "Chuyển khoản ngân hàng (Banking)";
+        $pttt_class = "badge-banking";
+        $pttt_icon = "🏦";
+    } else {
+        $pttt_text = "Tiền mặt khi nhận hàng (COD)";
+        $pttt_class = "badge-cod";
+        $pttt_icon = "🚚";
+    }
+} else {
+    // Dự phòng cho các đơn hàng cũ chưa có cột pttt
+    $pttt_text = "Tiền mặt khi nhận hàng (COD)";
+    $pttt_class = "badge-cod";
+    $pttt_icon = "🚚";
+}
 ?>
 
 <div class="status-container">
@@ -219,22 +263,28 @@ $progress_width = ($st <= 3) ? ($st * 33.33) : 0;
 <div class="detail-container">
     <div class="cart-header">
         <h1>Chi Tiết Đơn Hàng #HB-<?= $bill['idhd'] ?></h1>
-        <p><i class="far fa-calendar-alt"></i> Ngày đặt: <?= $bill['ngaydat'] ?></p>
+        <p><i class="far fa-calendar-alt"></i> Ngày đặt: <?= date('d/m/Y H:i:s', strtotime($bill['ngaydat'])) ?></p>
     </div>
 
     <div class="bill-info">
         <div class="info-box">
             <h4><i class="fas fa-map-marker-alt"></i> Thông tin người nhận</h4>
-            <p><strong>Họ tên:</strong> <?= $bill['hoten'] ?></p>
-            <p><strong>Số điện thoại:</strong> <?= $bill['sdt'] ?></p>
-            <p><strong>Địa chỉ:</strong> <?= $bill['diachi'] ?></p>
+            <p><strong>Họ tên:</strong> <?= htmlspecialchars($bill['hoten']) ?></p>
+            <p><strong>Số điện thoại:</strong> <?= htmlspecialchars($bill['sdt']) ?></p>
+            <p><strong>Địa chỉ:</strong> <?= htmlspecialchars($bill['diachi']) ?></p>
         </div>
+
         <div class="info-box" style="text-align: right;">
             <h4><i class="fas fa-credit-card"></i> Thanh toán</h4>
-            <p>Phương thức: Tiền mặt khi nhận hàng (COD)</p>
+            <p>Phương thức: </p>
+            <div class="payment-badge <?= $pttt_class ?>">
+                <?= $pttt_icon ?> <?= $pttt_text ?>
+            </div>
+
             <p style="margin-top: 15px;">
                 <span style="font-size: 16px; color: var(--brown-primary);">Tổng thanh toán:</span><br>
-                <strong style="font-size: 28px; color: var(--red-soft);"><?= number_format($bill['tongthanhtoan']) ?>
+                <strong
+                    style="font-size: 28px; color: var(--red-soft);"><?= number_format($bill['tongthanhtoan'], 0, ',', '.') ?>
                     đ</strong>
             </p>
         </div>
@@ -251,7 +301,6 @@ $progress_width = ($st <= 3) ? ($st * 33.33) : 0;
         </thead>
         <tbody>
             <?php
-            // Đảm bảo dùng đúng biến từ controller đổ ra (thường là $billct hoặc $billdetails)
             $items = isset($billct) ? $billct : (isset($billdetails) ? $billdetails : []);
             foreach ($items as $item):
                 ?>
@@ -259,12 +308,13 @@ $progress_width = ($st <= 3) ? ($st * 33.33) : 0;
                     <td style="display: flex; align-items: center; gap: 20px; text-align: left;">
                         <img src="uploads/<?= $item['img'] ?>" class="img-detail"
                             onerror="this.src='../uploads/default.jpg'">
-                        <span style="font-weight: bold; color: var(--brown-primary);"><?= $item['tensp'] ?></span>
+                        <span
+                            style="font-weight: bold; color: var(--brown-primary);"><?= htmlspecialchars($item['tensp']) ?></span>
                     </td>
-                    <td><?= number_format($item['dongia']) ?> đ</td>
+                    <td><?= number_format($item['dongia'], 0, ',', '.') ?> đ</td>
                     <td>x <?= $item['soluong'] ?></td>
                     <td style="font-weight: bold; color: var(--gold-dark); font-size: 18px;">
-                        <?= number_format($item['thanhtien']) ?> đ
+                        <?= number_format($item['thanhtien'], 0, ',', '.') ?> đ
                     </td>
                 </tr>
             <?php endforeach; ?>

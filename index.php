@@ -206,22 +206,37 @@ switch ($act) {
         include "view/cart/viewcart.php";
         break;
 
+    /* ==================== QUẢN LÝ GIỎ HÀNG & THANH TOÁN ==================== */
+    // ... các case addcart, viewcart giữ nguyên ...
+
     case 'thanhtoan':
-        include "view/cart/thanhtoan.php";
+        // Chỉ cho phép thanh toán nếu đã đăng nhập để tránh lỗi iduser = 0
+        if (isset($_SESSION['user'])) {
+            include "view/cart/thanhtoan.php";
+        } else {
+            header('Location: index.php?act=dangnhap');
+        }
         break;
 
     case 'hoadon':
         if (isset($_POST['dongydathang'])) {
-            // 1. LẤY DỮ LIỆU TỪ FORM (Bắt buộc phải có đoạn này)
+            // 1. LẤY DỮ LIỆU TỪ FORM (Tương ứng với các name trong file thanhtoan.php của bạn)
             $hoten = $_POST['hoten'];
             $sdt = $_POST['sdt'];
             $diachi = $_POST['diachi'];
-            $tongthanhtoan = $_POST['tongdonhang']; // Đảm bảo bên view/thanhtoan.php có input name="tongdonhang"
-            $ngaydat = date('Y-m-d H:i:s');
-            $iduser = (isset($_SESSION['user']['id'])) ? $_SESSION['user']['id'] : 0;
+            $email = $_POST['email'];
+            $pttt = $_POST['pttt']; // Nhận giá trị 1 (COD) hoặc 2 (Chuyển khoản)
+            $tongthanhtoan = $_POST['tongdonhang'];
 
-            // 2. TẠO HÓA ĐƠN VÀ LẤY ID VỪA TẠO
-            $idhd = bill_insert_id($iduser, $hoten, $sdt, $diachi, $tongthanhtoan, $ngaydat);
+            $ngaydat = date('Y-m-d H:i:s');
+
+            // Lấy ID người dùng từ Session. Nếu chưa đăng nhập thì case 'thanhtoan' đã chặn rồi, 
+            // nhưng để an toàn ta vẫn dùng toán tử ??
+            $iduser = $_SESSION['user']['id'] ?? 0;
+
+            // 2. TẠO HÓA ĐƠN GỐC (Đảm bảo hàm insert_bill của bạn nhận đủ các tham số này)
+            // Nếu hàm cũ của bạn là bill_insert_id, hãy kiểm tra xem nó có lưu được PTTT không.
+            $idhd = bill_insert_id($iduser, $hoten, $sdt, $diachi, $tongthanhtoan, $ngaydat, $email, $pttt);
 
             // 3. XỬ LÝ CHI TIẾT VÀ TRỪ KHO
             if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
@@ -234,23 +249,32 @@ switch ($act) {
                     // Lưu vào bảng chitiethoadon
                     insert_chitiethoadon($idhd, $idsp, $soluong, $dongia, $thanhtien);
 
-                    // Cập nhật số lượng tồn kho (Hàm này bạn đã viết trong model/sanpham.php)
+                    // Cập nhật số lượng tồn kho
                     update_soluong_kho($idsp, $soluong);
                 }
             }
 
-            // 4. XÓA GIỎ HÀNG VÀ THÔNG BÁO
+            // 4. XÓA GIỎ HÀNG
             clear_cart();
-            echo "<script>
-                alert('Đặt hàng thành công! Mã đơn hàng của bạn là: #" . $idhd . "');
-                window.location.href = 'index.php';
-              </script>";
+
+            // 5. ĐIỀU HƯỚNG THEO PHƯƠNG THỨC THANH TOÁN
+            if ($pttt == 2) {
+                // Nếu khách chọn Chuyển khoản (value=2 trong form của bạn)
+                // Nạp trang hướng dẫn chuyển tiền ngân hàng
+                $bill = loadone_hoadon($idhd); // Lấy lại thông tin đơn hàng để hiển thị mã đơn
+                include "view/cart/bill_banking.php";
+            } else {
+                // Nếu chọn COD (value=1 trong form của bạn)
+                echo "<script>
+                    alert('Đặt hàng thành công! Mã đơn hàng của bạn là: #" . $idhd . "');
+                    window.location.href = 'index.php?act=mybill';
+                  </script>";
+            }
 
         } else {
             header("location: index.php");
         }
         break;
-
     /* ==================== SẢN PHẨM ==================== */
     case 'sanpham':
         $kyw = $_POST['kyw'] ?? "";

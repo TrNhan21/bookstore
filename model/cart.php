@@ -71,11 +71,11 @@ function get_tong_donhang()
 // 2. TƯƠNG TÁC DATABASE (Hóa đơn & Chi tiết)
 // ==========================================
 
-function bill_insert_id($iduser, $hoten, $sdt, $diachi, $tongthanhtoan, $ngaydat)
+function bill_insert_id($iduser, $hoten, $sdt, $diachi, $tongthanhtoan, $ngaydat, $email, $pttt)
 {
-    $sql = "INSERT INTO hoadon(iduser, hoten, sdt, diachi, tongthanhtoan, ngaydat) 
-            VALUES (?, ?, ?, ?, ?, ?)";
-    return pdo_execute_return_lastInsertId($sql, $iduser, $hoten, $sdt, $diachi, $tongthanhtoan, $ngaydat);
+    $sql = "INSERT INTO hoadon(iduser, hoten, sdt, diachi, tongthanhtoan, ngaydat, email, pttt) 
+            VALUES ('$iduser', '$hoten', '$sdt', '$diachi', '$tongthanhtoan', '$ngaydat', '$email', '$pttt')";
+    return pdo_execute_return_lastInsertId($sql);
 }
 
 function insert_chitiethoadon($idhd, $idsp, $soluong, $dongia, $thanhtien)
@@ -311,4 +311,26 @@ function loadall_bill()
     $listbill = pdo_query($sql);
     return $listbill;
 }
+// Thêm tham số $pttt vào hàm
+function insert_bill($iduser, $hoten, $email, $diachi, $sdt, $pttt, $ngaydat, $tongthanhtoan)
+{
+    // Lưu ý: Cột 'pttt' cần được thêm vào bảng 'hoadon' trong MySQL nếu chưa có
+    $sql = "INSERT INTO hoadon(iduser, hoten, email, diachi, sdt, pttt, tongthanhtoan, ngaydat, bill_status) 
+            VALUES(?, ?, ?, ?, ?, ?, ?, ?, '0')";
+    return pdo_execute_return_lastInsertId($sql, $iduser, $hoten, $email, $diachi, $sdt, $pttt, $tongthanhtoan, $ngaydat);
+}
+function get_pttt_text($pttt_number)
+{
+    switch ($pttt_number) {
+        case 0:
+            return "Thanh toán khi nhận hàng (COD)";
+        case 1:
+            return "Chuyển khoản ngân hàng";
+        case 2:
+            return "Thanh toán qua Ví điện tử";
+        default:
+            return "Chưa xác định";
+    }
+}
+
 ?>
